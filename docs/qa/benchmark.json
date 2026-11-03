@@ -1,0 +1,29 @@
+{
+  "durationMs": 60048,
+  "visitors": 40,
+  "effectLimit": 180,
+  "maxActiveEffects": 180,
+  "frames": 3569,
+  "meanFps": 59.55042681420475,
+  "p95FrameMs": 17.600000001490116,
+  "minimum60FrameWindowFps": 46.75446115467232,
+  "renderer": "WebGL",
+  "gpu": "ANGLE (Apple, ANGLE Metal Renderer: Apple M1, Unspecified Version)",
+  "timing": "Raw performance.now intervals between rendered game updates",
+  "lastUpdateCpuMs": 0.09999999403953552,
+  "hardware": {
+    "cpu": "Apple M1",
+    "cores": 8,
+    "memoryGiB": 16,
+    "platform": "darwin",
+    "release": "27.2.0",
+    "arch": "arm64"
+  },
+  "browser": "Playwright Chromium headed (hardware GPU)",
+  "resolution": [
+    1080,
+    1920
+  ],
+  "build": "production",
+  "scenario": "40 visitors, gifts every 700ms, increasing audience milestones every 4.9s; audio disabled"
+}

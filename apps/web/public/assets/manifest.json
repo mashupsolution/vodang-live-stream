@@ -1,0 +1,50 @@
+{
+  "theme": "Võ Đang Phái LIVE — Kim Đỉnh Vân Hải (Wudang Sect Celestial Summit)",
+  "generator": "Google Imagen 3 / Built-in image_gen with #FF00FF chroma-key isolation",
+  "reference": "docs/reference/vo-dang-concept.jpg",
+  "artDirection": "docs/ART_DIRECTION_WUDANG.md",
+  "prompts": "docs/ASSET_PROMPTS.md",
+  "normalization": "node scripts/normalize-assets.mjs",
+  "musicSynthesis": "node scripts/generate-music.mjs",
+  "assets": [
+    {
+      "file": "linh-son-hall.webp",
+      "role": "Mount Wudang Golden Summit celestial background with Taiji marble dais, stone lantern columns and sea of clouds",
+      "size": [1080, 1920],
+      "pivot": [0.5, 0.5],
+      "source": "vo-dang-hall-raw.jpg -> linh-son-hall.png",
+      "prompt": "Painted 2.5D Wuxia/Xianxia Mount Wudang celestial summit above sea of clouds (Võ Đang Kim Đỉnh Vân Hải), twin carved stone lantern pillars with warm/cyan spiritual flames, floating circular Taiji Yin-Yang dais in the center, golden dawn rays through mist, gilded Golden Hall (Kim Đỉnh) in the distance, no people, no text",
+      "status": "dimensions 1080x1920; opaque 90% webp; zero text/UI artifacts; native in-engine composition verified"
+    },
+    {
+      "file": "tu-linh-dinh.webp",
+      "role": "independent transparent Chân Vũ Bát Quái Đỉnh Daoist incense cauldron with twin floating swords and lotus offerings",
+      "size": [880, 880],
+      "pivot": [0.5, 1.0],
+      "source": "chan-vu-dinh-raw.jpg -> tu-linh-dinh.png",
+      "prompt": "Isolated antique bronze and dark jade Daoist incense cauldron (Chân Vũ Bát Quái Đỉnh) on Bagua Taiji pedestal, Taiji medallion and Bagua trigrams, glowing purple-golden spiritual incense smoke rising, flanked by twin Chân Vũ flying swords and blooming spiritual lotuses, #FF00FF chroma backdrop",
+      "status": "chroma unmixed + despilled from #FF00FF; tight transparent bounds cropped with 16px/4px padding; width 880; alpha verified min=0, max=255; zero magenta fringe"
+    },
+    {
+      "file": "cultivators.png",
+      "role": "two Wudang Daoist cultivator identities (female daoist, male daoist) across 4 poses (standing, meditating, absorbing aura, offering spiritual token)",
+      "size": [2048, 1024],
+      "frameSize": [512, 512],
+      "pivot": [0.5, 0.95703125],
+      "source": "cultivators-vudang-raw.jpg -> cultivators-source.png",
+      "prompt": "2.5D Wudang Daoist character sprite atlas, 4 equal cols x 2 equal rows on #FF00FF backdrop. Row 1: female daoist in navy/white robes with Taiji embroidery, hair bun with hairpin and navy ribbons; Row 2: male daoist in navy/white robes with topknot and Daoist crown. Col 1: standing hands behind back; Col 2: lotus meditation posture; Col 3: deep cultivation absorbing golden aura; Col 4: offering glowing golden Taiji token. Rear view facing altar.",
+      "status": "chroma unmixed; sliced 4x2; uniform row scale applied; baseline normalized to y=490 (pivot y=0.957); verified min=0, max=255 alpha; zero magenta fringe on QA preview"
+    },
+    {
+      "file": "music.mp3",
+      "role": "ethereal pentatonic Xianxia ambient loop",
+      "sizeBytes": 1153678,
+      "duration": 48.0,
+      "format": "192kbps CBR stereo MP3 @ 44.1kHz",
+      "scale": "D Major Pentatonic (D, E, F#, A, B across octaves 2-6)",
+      "layers": "Warm breathing D2/A2 drone + airy Xiao bamboo flute phrases + plucked Guzheng arpeggios with 380ms/760ms mountain echo + jade wind chimes",
+      "loop": "3.0s equal-power cosine crossfade; 0-click seamless loop; normalized to -6 dBFS peak with -18.5 dBFS RMS headroom"
+    }
+  ],
+  "provenance": "AI-generated original Wudang Sect art for Võ Đang Phái LIVE with strict chroma keying, normalized deterministically via sharp. Original high-res source PNGs retained. Procedural stereo audio synthesized via node + ffmpeg. Total decoded texture memory is 16.89 MB (< 32 MB budget)."
+}

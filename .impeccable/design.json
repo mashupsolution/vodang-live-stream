@@ -1,0 +1,232 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-01T04:30:00.000000+00:00",
+  "title": "Design System: Tu Tiên Online LIVE — Đỉnh Linh Sơn Vân Hải",
+  "extensions": {
+    "colorMeta": {
+      "jade-primary": {
+        "role": "primary",
+        "displayName": "Celadon Jade Primary",
+        "canonical": "#16534e"
+      },
+      "jade-hover": {
+        "role": "primary",
+        "displayName": "Celadon Jade Hover",
+        "canonical": "#0f3f3b"
+      },
+      "teal-navigation": {
+        "role": "primary",
+        "displayName": "Teal Navigation",
+        "canonical": "#103432"
+      },
+      "teal-navigation-hover": {
+        "role": "primary",
+        "displayName": "Teal Navigation Hover",
+        "canonical": "#184946"
+      },
+      "cloud-porcelain": {
+        "role": "neutral",
+        "displayName": "Porcelain Cloud Background",
+        "canonical": "#eff4f2"
+      },
+      "cloud-paper": {
+        "role": "neutral",
+        "displayName": "Panel Paper",
+        "canonical": "#f9fcfb"
+      },
+      "jade-mist-border": {
+        "role": "neutral",
+        "displayName": "Jade Mist Border",
+        "canonical": "#d3e0dc"
+      },
+      "ink-primary": {
+        "role": "neutral",
+        "displayName": "Primary Ink",
+        "canonical": "#162e2c"
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "canonical": "#46635f"
+      },
+      "focus-gold": {
+        "role": "secondary",
+        "displayName": "Celestial Bronze-Gold Focus",
+        "canonical": "#b58938"
+      },
+      "celestial-gold": {
+        "role": "secondary",
+        "displayName": "Celestial Gold",
+        "canonical": "#f6d27a"
+      },
+      "celestial-yellow": {
+        "role": "secondary",
+        "displayName": "Celestial Light Core",
+        "canonical": "#fef08a"
+      },
+      "spirit-cyan": {
+        "role": "secondary",
+        "displayName": "Spirit Cyan Qi",
+        "canonical": "#67e8f9"
+      },
+      "spirit-emerald": {
+        "role": "secondary",
+        "displayName": "Spirit Emerald",
+        "canonical": "#6ee7b7"
+      },
+      "astral-jade-overlay": {
+        "role": "secondary",
+        "displayName": "Astral Jade Overlay",
+        "canonical": "#0d2224d6"
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Sect display",
+        "purpose": "Portrait Linh Sơn title, scaled with cqw."
+      },
+      "headline": {
+        "displayName": "Operator headline",
+        "purpose": "Admin page heading."
+      },
+      "title": {
+        "displayName": "Section title",
+        "purpose": "Lora section titles; panel size overrides are documented in DESIGN.md."
+      },
+      "body": {
+        "displayName": "Body baseline",
+        "purpose": "Be Vietnam Pro root baseline for Vietnamese UI."
+      },
+      "label": {
+        "displayName": "Button label",
+        "purpose": "Shared button and interactive control typography."
+      }
+    },
+    "shadows": [
+      {
+        "name": "portrait-preview",
+        "value": "0 15px 40px rgba(16, 52, 50, 0.14)",
+        "purpose": "Structural lift for the preview frame."
+      },
+      {
+        "name": "selected-camera",
+        "value": "0 1px 4px rgba(22, 83, 78, 0.12)",
+        "purpose": "Selected segment button."
+      },
+      {
+        "name": "toast",
+        "value": "0 8px 30px rgba(16, 52, 50, 0.25)",
+        "purpose": "Transient feedback notification."
+      }
+    ],
+    "motion": [
+      {
+        "name": "control-state",
+        "value": "0.15s",
+        "purpose": "Button, navigation, and input transitions."
+      },
+      {
+        "name": "progress-fill",
+        "value": "width 0.5s",
+        "purpose": "Tụ Linh Đại Trận progress change; disabled by prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "wide-desktop-min",
+        "value": "1600px"
+      },
+      {
+        "name": "compact-desktop-max",
+        "value": "1200px"
+      },
+      {
+        "name": "narrow-desktop-max",
+        "value": "1000px"
+      },
+      {
+        "name": "mobile-max",
+        "value": "760px"
+      }
+    ],
+    "streamLayout": {
+      "hudMaxNativeY": 480,
+      "informationSlot": "upper fixed-height slot; top-three boards/help replaced by prioritized events or approved vow excerpts",
+      "discipleRows": 8,
+      "discipleColumns": 5,
+      "discipleSeatY": "1138 + row * 106",
+      "discipleSpread": "146 + row * 9",
+      "discipleFrameSize": "96 + row",
+      "nameplateFontSize": 20,
+      "cameraDefault": "wide; autoCamera false; retain saved preferences"
+    }
+  },
+  "components": [
+    {
+      "name": "Primary button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "Implemented operator action; celadon jade background with ivory text and celestial gold focus.",
+      "html": "<button class=\"ds-primary\">Chạy mô phỏng</button>",
+      "css": ".ds-primary{font-family:\"Be Vietnam Pro\",sans-serif;display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:38px;border:1px solid transparent;border-radius:7px;padding:9px 14px;font-size:12px;font-weight:500;transition:background .15s,transform .15s;text-align:center;line-height:1.5;cursor:pointer;background:#16534e;color:#f7fbf9;} .ds-primary:hover:not(:disabled){background:#0f3f3b;transform:translateY(-1px);} .ds-primary:focus-visible{outline:3px solid #b58938;outline-offset:4px;} .ds-primary:disabled{cursor:not-allowed;opacity:.5;} @media(prefers-reduced-motion:reduce){.ds-primary{transition:none;}}"
+    },
+    {
+      "name": "Secondary button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Implemented operator secondary action with jade-mist border.",
+      "html": "<button class=\"ds-secondary\">Sao chép</button>",
+      "css": ".ds-secondary{font-family:\"Be Vietnam Pro\",sans-serif;display:inline-flex;justify-content:center;align-items:center;gap:8px;min-height:38px;border:1px solid #d3e0dc;border-radius:7px;padding:9px 14px;font-size:12px;font-weight:500;transition:background .15s,transform .15s;text-align:center;line-height:1.5;cursor:pointer;background:#f9fcfb;color:#162e2c;} .ds-secondary:hover:not(:disabled){background:#eaf3f0;transform:translateY(-1px);} .ds-secondary:focus-visible{outline:3px solid #b58938;outline-offset:4px;} .ds-secondary:disabled{cursor:not-allowed;opacity:.5;} @media(prefers-reduced-motion:reduce){.ds-secondary{transition:none;}}"
+    },
+    {
+      "name": "Cultivator name field",
+      "kind": "input",
+      "refersTo": "field",
+      "description": "Compact labeled operator text field with crisp jade focus ring.",
+      "html": "<label class=\"ds-label\" for=\"ds-name\">Tên đạo hữu</label><input class=\"ds-field\" id=\"ds-name\" placeholder=\"Nhập tên đạo hữu\" value=\"Vân Tiêu\">",
+      "css": ".ds-label{font-family:\"Be Vietnam Pro\",sans-serif;font-size:11px;color:#315450;display:block;margin-bottom:7px;} .ds-field{font-family:\"Be Vietnam Pro\",sans-serif;width:100%;background:#ffffff;border:1px solid #d3e0dc;border-radius:6px;padding:9px 11px;font-size:11px;min-height:36px;color:#162e2c;caret-color:#16534e;transition:border-color .15s;} .ds-field::placeholder{color:#728c88;} .ds-field:focus{border-color:#16534e;outline:2px solid #c2ded9;outline-offset:0;} @media(prefers-reduced-motion:reduce){.ds-field{transition:none;}}"
+    },
+    {
+      "name": "Operator navigation",
+      "kind": "nav",
+      "refersTo": "navigation",
+      "description": "Desktop pine-teal navigation with a porcelain cloud current page.",
+      "html": "<div class=\"ds-sidebar\"><nav class=\"ds-nav\" aria-label=\"Điều hướng quản trị\"><button class=\"ds-nav-item ds-active\" aria-current=\"page\"><span>Phòng điều khiển</span></button><button class=\"ds-nav-item\">Bia đạo tâm</button></nav></div>",
+      "css": ".ds-sidebar{background:#103432;padding:34px 20px 24px;} .ds-nav{display:grid;gap:8px;} .ds-nav-item{font-family:\"Be Vietnam Pro\",sans-serif;display:flex;align-items:center;gap:12px;width:100%;padding:13px 14px;background:none;border:none;border-radius:9px;color:#b5ccc7;text-align:left;font-size:12px;min-height:46px;transition:background .15s;cursor:pointer;} .ds-nav-item:hover{background:#184946;color:#ffffff;} .ds-nav-item.ds-active{background:#eff4f2;color:#113a37;font-weight:600;} .ds-nav-item:focus-visible{outline:3px solid #b58938;outline-offset:4px;} @media(max-width:760px){.ds-nav{display:flex;gap:5px;overflow:auto;} .ds-nav-item{width:auto;flex:1;justify-content:center;white-space:nowrap;padding:11px 9px;gap:6px;font-size:10px;border-radius:7px 7px 0 0;min-height:41px;} .ds-nav-item.ds-active{background:#eff4f2;}} @media(prefers-reduced-motion:reduce){.ds-nav-item{transition:none;}}"
+    },
+    {
+      "name": "Shared sect progress",
+      "kind": "custom",
+      "refersTo": "temple-progress",
+      "description": "Slim semantic cultivation progress in the upper livestream HUD, separate from the disciple floor.",
+      "html": "<div class=\"ds-temple\"><div class=\"ds-progress\"><div class=\"ds-progress-row\"><span>Tụ Linh Đại Trận</span><strong>120 <small>/ 250</small></strong></div><div class=\"ds-track\" role=\"progressbar\" aria-label=\"Linh khí tông môn\" aria-valuemin=\"0\" aria-valuemax=\"250\" aria-valuenow=\"120\"><span style=\"width:48%\"></span></div></div></div>",
+      "css": ".ds-temple{font-family:\"Be Vietnam Pro\",sans-serif;container-type:inline-size;color:#f7fbf9;} .ds-progress{background:rgba(13,34,36,0.86);border:1px solid rgba(42,105,98,0.65);padding:3cqw 3.5cqw;border-radius:8px;} .ds-progress-row{display:flex;justify-content:space-between;gap:8px;align-items:center;font-size:2.3cqw;} .ds-progress strong{font-size:3.4cqw;color:#f6d27a;font-weight:600;font-variant-numeric:tabular-nums;} .ds-progress small{font-size:2.4cqw;color:#a7f3d0;font-weight:400;} .ds-track{height:4px;background:rgba(22,60,56,0.6);margin-top:2.5cqw;overflow:hidden;border-radius:2px;} .ds-track>span{display:block;height:100%;background:linear-gradient(90deg,#34d399,#f6d27a);transition:width .5s;} @media(prefers-reduced-motion:reduce){.ds-track>span{transition:none;}}"
+    }
+  ],
+  "narrative": {
+    "northStar": "Tu Tiên Online LIVE — Đỉnh Linh Sơn Vân Hải",
+    "overview": "Đỉnh Linh Sơn Vân Hải delivers a celestial cultivation sanctuary for Vietnamese TikTok LIVE streaming. Features layered 2.5D painted art, 40 visible cultivators, 180 pooled Xianxia VFX sprites, procedural guzheng and thunder sound design, and an operator UI themed in Vân Ngọc & Kim Quang.",
+    "keyCharacteristics": [
+      "Celadon Jade and Celestial Gold ethereal palette with deep astral mist.",
+      "Quiet porcelain cloud and panel paper operator surfaces with WCAG AA compliance.",
+      "Strict zero-allocation per-frame pooling for 180 effect sprites and 40 visible cultivators."
+    ],
+    "rules": [
+      {
+        "name": "The Cultivation Rule",
+        "body": "Preserve the 40-cultivator ceiling, 180-particle pool, 1080×1920 portrait frame, and deterministic capture hooks.",
+        "section": "architecture"
+      }
+    ],
+    "dos": [
+      "**Do** keep all WebAudio sound synthesis bounded within 10 active polyphony voices.",
+      "**Do** ensure all body, label, and control copy exceeds WCAG AA contrast (≥ 4.5:1).",
+      "**Do** retain deterministic ?capture=1 behavior and prefers-reduced-motion support."
+    ],
+    "donts": [
+      "**Don't** allocate objects or closures in Phaser update() loops.",
+      "**Don't** allow horizontal scroll on 1440×1100 desktop or 390×844 mobile viewports.",
+      "**Don't** touch server or shared packages outside your assigned ownership."
+    ]
+  }
+}
