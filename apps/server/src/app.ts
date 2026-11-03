@@ -7,11 +7,13 @@ import {
   mappingSchema,
   settingsSchema,
   tiktokConfigInputSchema,
+  type AdminSnapshot,
   type TikTokConfig,
 } from "../../../packages/shared/src/index.ts";
 import { Store } from "./store.ts";
 import { Engine } from "./engine.ts";
 import { Narrator } from "./narrator.ts";
+import { Simulator } from "./simulator.ts";
 import {
   MockConnector,
   TikTokConnector,
@@ -86,6 +88,7 @@ export function createTempleApp(
   }, 2000);
   heartbeat.unref();
   let connector: LiveConnector = new MockConnector((e) => engine.ingest(e));
+  const simulator = new Simulator(engine);
   let switching = false;
   app.get("/api/narrator", async (_req, res) =>
     res.json(await narrator.status(engine.snapshot().settings.narratorVoice)),
@@ -210,6 +213,32 @@ export function createTempleApp(
   app.post("/api/prayers/:id", handleModeratePrayer);
   app.post("/api/vows/:id", handleModeratePrayer);
 
+  app.post("/api/simulator", (req, res) => {
+    const { running, giftId, disciples } = z
+      .object({
+        running: z.boolean(),
+        giftId: z.string().min(1).max(100).optional(),
+        disciples: z.number().int().min(1).max(500).optional(),
+      })
+      .parse(req.body);
+    if (running) {
+      if (engine.connector.mode !== "mock") {
+        res
+          .status(400)
+          .json({ error: "Tắt kết nối TikTok trước khi chạy mô phỏng." });
+        return;
+      }
+      const gift = (engine.snapshot(true) as AdminSnapshot).mappings.find(
+        (m) => m.giftId === giftId,
+      );
+      simulator.start(gift?.giftId, gift?.name, disciples);
+    } else simulator.stop();
+    res.json(engine.snapshot(true));
+  });
+  app.post("/api/simulator/reset", (_req, res) => {
+    engine.resetDemo();
+    res.json(engine.snapshot(true));
+  });
   app.post("/api/session/new", (_req, res) => {
     engine.newSession();
     res.json(engine.snapshot(true));
@@ -243,6 +272,7 @@ export function createTempleApp(
       }
       switching = true;
       try {
+        simulator.stop();
         await connector.stop();
         if (mode === "mock") {
           connector = new MockConnector((e) => engine.ingest(e));

@@ -104,7 +104,30 @@ const defaultMappings: GiftMapping[] = [
     intensity: 3,
     points: 50,
   },
+  {
+    giftId: "5655",
+    name: "Hoa Hồng",
+    action: "meditate",
+    intensity: 1,
+    points: 1,
+  },
+  {
+    giftId: "5487",
+    name: "Tim Ngón Tay",
+    action: "meditate",
+    intensity: 1,
+    points: 5,
+  },
+  {
+    giftId: "5660",
+    name: "Bánh Vòng",
+    action: "elixir",
+    intensity: 2,
+    points: 30,
+  },
 ];
+
+const tiktokGiftIds = new Set(["5655", "5487", "5660"]);
 
 const initial = (now: number): DurableState => ({
   version: 1,
@@ -156,6 +179,8 @@ export class Engine {
     attempt: 0,
   };
   onChange = () => {};
+  /** Set by the server-side Simulator so every admin tab sees the same state. */
+  simulating = false;
 
   constructor(
     readonly store: Store,
@@ -206,6 +231,14 @@ export class Engine {
 
     if (!this.state.mappings?.length) {
       this.state.mappings = [...defaultMappings];
+    }
+    for (const gift of defaultMappings) {
+      if (
+        tiktokGiftIds.has(gift.giftId) &&
+        !this.state.mappings.some((m) => m.giftId === gift.giftId)
+      ) {
+        this.state.mappings.push({ ...gift });
+      }
     }
     for (const c of Object.values(this.state.cultivators)) {
       c.tuVi ??= 0;
@@ -352,6 +385,7 @@ export class Engine {
     return admin
       ? {
           ...publicState,
+          simulating: this.simulating,
           mappings: structuredClone(s.mappings),
           pendingPrayers: s.prayers
             .filter((p) => p.status === "pending")
@@ -456,6 +490,35 @@ export class Engine {
         recentDonors: [],
       };
     });
+  }
+
+  /** Drop simulated disciples from the temple floor; scores and tu vi stay. */
+  clearDemo() {
+    this.commit(() => {
+      this.state.visitors = this.state.visitors.filter(
+        (v) => !v.id.startsWith("demo:"),
+      );
+    });
+  }
+
+  /** Fresh scoreboards and no simulated disciples; real viewers are untouched. */
+  resetDemo() {
+    this.newSession("mock");
+    this.commit(() => {
+      const s = this.state;
+      s.visitors = s.visitors.filter((v) => !v.id.startsWith("demo:"));
+      for (const id of Object.keys(s.cultivators))
+        if (id.startsWith("demo:")) delete s.cultivators[id];
+      for (const key of Object.keys(s.cooldowns))
+        if (key.startsWith("viewer:demo:")) delete s.cooldowns[key];
+    });
+  }
+
+  hasDemoVisitors() {
+    const now = this.now();
+    return this.state.visitors.some(
+      (v) => v.id.startsWith("demo:visitor:") && v.expiresAt > now,
+    );
   }
 
   private commit(fn: () => void) {

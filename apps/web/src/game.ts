@@ -133,6 +133,12 @@ export function mountGame(parent: HTMLElement, client: TempleClient) {
         frameWidth: 512,
         frameHeight: 512,
       });
+      for (let t = 2; t <= 5; t++) {
+        this.load.spritesheet(`cultivator-t${t}`, `/assets/cultivators-t${t}.png`, {
+          frameWidth: 512,
+          frameHeight: 512,
+        });
+      }
 
       // Safe fallbacks to keep runtime rock-solid in all pipeline phases
       this.load.image("hall-fallback", "/assets/temple-hall.webp");
@@ -145,6 +151,15 @@ export function mountGame(parent: HTMLElement, client: TempleClient) {
       this.load.on("loaderror", () => {
         // Fallback texture will be selected smoothly in create()
       });
+    }
+
+    private getCultivatorTexture(realmIndex: number): string {
+      const tier = Math.min(5, Math.max(1, Math.floor(realmIndex / 2) + 1));
+      if (tier > 1) {
+        const key = `cultivator-t${tier}`;
+        if (this.textures.exists(key)) return key;
+      }
+      return this.activeCultivatorKey;
     }
 
     create() {
@@ -435,7 +450,7 @@ export function mountGame(parent: HTMLElement, client: TempleClient) {
             name: "",
             telemetry,
             sprite: this.add
-              .image(0, 0, this.activeCultivatorKey, (v.variant % 2) * 4 + 1)
+              .image(0, 0, this.getCultivatorTexture(v.realmIndex), (v.variant % 2) * 4 + 1)
               .setOrigin(0.5, 490 / 512),
             shadow: this.add.ellipse(
               0,
@@ -482,6 +497,8 @@ export function mountGame(parent: HTMLElement, client: TempleClient) {
               ).color
             : 0x0c2426,
         );
+        const tierKey = this.getCultivatorTexture(v.realmIndex);
+        if (art.sprite.texture.key !== tierKey) art.sprite.setTexture(tierKey);
         art.telemetry.name = v.name;
         art.telemetry.text = art.label.text;
       }
@@ -895,8 +912,13 @@ export function mountGame(parent: HTMLElement, client: TempleClient) {
             : 0;
           const alpha = Math.min(entry, exit);
 
+          const texKey = this.getCultivatorTexture(v.realmIndex);
+          if (art.sprite.texture.key !== texKey) {
+            art.sprite.setTexture(texKey, frame);
+          } else {
+            art.sprite.setFrame(frame);
+          }
           art.sprite
-            .setFrame(frame)
             .setPosition(px, py + breathe + settle)
             .setDisplaySize(size, size)
             .setAlpha(alpha)

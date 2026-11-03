@@ -17,7 +17,7 @@ test("TikTok instructions, gift-only flowers and session boards synchronize and 
   await overlay.emulateMedia({ reducedMotion: "reduce" });
   await overlay.goto("/overlay");
   await expect(
-    overlay.getByRole("region", { name: "Bảng tri ân", exact: true }),
+    overlay.getByRole("region", { name: "Bảng công trạng", exact: true }),
   ).toBeVisible();
   await expect(overlay.getByText("!tu", { exact: true })).toBeVisible();
   expect(await overlay.getByRole("button").count()).toBe(0);
@@ -94,7 +94,7 @@ test("TikTok instructions, gift-only flowers and session boards synchronize and 
     .getByRole("button", { name: "Xác nhận phiên mới", exact: true })
     .click();
   await expect(overlay.locator(".stream-thanks")).toContainText(
-    "Chưa có lượt ghi nhận",
+    "Chưa có ai lên bảng",
   );
   await expect(overlay.getByTestId("progress-value")).toHaveText("36 / 100");
 

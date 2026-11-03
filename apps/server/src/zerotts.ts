@@ -51,10 +51,19 @@ export function zeroTtsVoiceId(voice: NarratorVoice): string {
   return id in voiceLabels ? id : defaultZeroVoice;
 }
 
-/** ZeroTTS is chosen only when a local model or an explicit Python is configured. */
+/**
+ * ZeroTTS is chosen only when a local model or an explicit Python is configured
+ * and every configured path exists, so a stale `.env` falls back to Linh/Edge.
+ */
 export function zeroTtsConfigured(env: NodeJS.ProcessEnv = process.env) {
   if (env.ZEROTTS === "0") return false;
-  if (env.ZEROTTS_PYTHON || env.ZEROTTS_MODEL_PATH) return true;
+  if (env.ZEROTTS_PYTHON || env.ZEROTTS_MODEL_PATH) {
+    const python = env.ZEROTTS_PYTHON;
+    const model = env.ZEROTTS_MODEL_PATH;
+    // A bare command such as `python3` is resolved through PATH.
+    const pythonOk = !python || !/[\\/]/.test(python) || existsSync(python);
+    return pythonOk && (!model || existsSync(model));
+  }
   const dataDir = env.ZEROTTS_DATA_DIR || join(process.cwd(), "data");
   return existsSync(join(dataDir, "zerotts-model", "config.json"));
 }

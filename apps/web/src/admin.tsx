@@ -43,35 +43,6 @@ import { useTemple } from "./useTemple";
 
 type Tab = "control" | "prayers" | "gifts" | "settings";
 
-const DEMO_DISCIPLES = 50;
-
-const names = [
-  "Vân Tiêu",
-  "Thanh Huyền",
-  "Lăng Phong",
-  "Diệp Trần",
-  "Hàn Lập",
-  "Bạch Tiểu Thuần",
-  "Tô Minh",
-  "Lạc Tuyết",
-  "Tiêu Viêm",
-  "Lâm Động",
-  "Mộ Dung",
-  "Sở Hưu",
-  "Tần Vũ",
-  "Phương Hàn",
-  "Chu Nhất",
-  "Ngu Cơ",
-  "Chân Cơ",
-  "Vân Triệt",
-  "Cố Trường Ca",
-  "Thần Hạo",
-  "Bắc Huyền",
-  "Vô Cực",
-  "Tử Huyên",
-  "Minh Nguyệt",
-];
-
 const icons: Record<Action, typeof Sparkles> = {
   meditate: Sparkles,
   elixir: Flame,
@@ -133,7 +104,8 @@ export function Admin() {
   const [toast, setToast] = useState("");
   const [error, setError] = useState("");
   const [busy, setBusy] = useState(false);
-  const [running, setRunning] = useState(false);
+  const running = state?.simulating ?? false;
+  const [simResetArmed, setSimResetArmed] = useState(false);
   const [sessionResetArmed, setSessionResetArmed] = useState(false);
 
   const [narratorStatus, setNarratorStatus] = useState<{
@@ -150,6 +122,9 @@ export function Admin() {
   const [giftId, setGiftId] = useState("mock-linh-thach");
   const [count, setCount] = useState(1);
   const [audienceCount, setAudienceCount] = useState(1000);
+  const [simCount, setSimCount] = useState(1);
+  const simCountValid =
+    Number.isInteger(simCount) && simCount >= 1 && simCount <= 500;
 
   const [draft, setDraft] = useState<Settings>(defaultSettings);
   const [mappings, setMappings] = useState<GiftMapping[]>([]);
@@ -290,80 +265,6 @@ export function Admin() {
   async function updateCamera(camera: Settings["camera"]) {
     if (state) await api("settings", { ...state.settings, camera }, "PUT");
   }
-
-  const mappingsRef = useRef(state?.mappings);
-  mappingsRef.current = state?.mappings;
-  const giftIdRef = useRef(giftId);
-  giftIdRef.current = giftId;
-
-  useEffect(() => {
-    if (!running) return;
-    let active = true;
-    let index = 0;
-    let timer: ReturnType<typeof setTimeout>;
-
-    const tick = async () => {
-      try {
-        if (index === 0) {
-          for (let n = 0; n < DEMO_DISCIPLES && active; n++) {
-            await api(
-              "events",
-              makeEvent(
-                "join",
-                names[n % names.length],
-                {},
-                `demo:visitor:${n}`,
-              ),
-            );
-          }
-        }
-        if (!active) return;
-        const n = index++;
-        const user = names[n % names.length];
-
-        if (n % 4 === 0) {
-          const currentGiftId = giftIdRef.current || "mock-linh-thach";
-          const currentGiftName =
-            mappingsRef.current?.find((m) => m.giftId === currentGiftId)
-              ?.name ?? "Linh Thạch";
-          await api(
-            "events",
-            makeEvent(
-              "gift",
-              user,
-              {
-                giftId: currentGiftId,
-                giftName: currentGiftName,
-                count: 1,
-                streakId: crypto.randomUUID(),
-                final: true,
-              },
-              `demo:visitor:${n % DEMO_DISCIPLES}`,
-            ),
-          );
-        } else {
-          const cmd = ["!tu", "!dan", "!dokiep"][n % 3];
-          await api(
-            "events",
-            makeEvent("comment", user, { text: cmd }, `demo:visitor:${n % DEMO_DISCIPLES}`),
-          );
-        }
-
-        if (active) timer = setTimeout(tick, 1800);
-      } catch (e) {
-        if (active) {
-          setRunning(false);
-          setError((e as Error).message);
-        }
-      }
-    };
-
-    void tick();
-    return () => {
-      active = false;
-      clearTimeout(timer);
-    };
-  }, [running]);
 
   const setSetting = <K extends keyof Settings>(key: K, value: Settings[K]) => {
     draftDirty.current = true;
@@ -745,16 +646,92 @@ export function Admin() {
                     </div>
                   </fieldset>
                   <div className="demo-control">
+                    <div className="audience-simulator">
+                      <label htmlFor="sim-disciples">
+                        Số đệ tử mô phỏng
+                      </label>
+                      <div>
+                        <input
+                          id="sim-disciples"
+                          aria-label="Số đệ tử mô phỏng"
+                          type="number"
+                          min="1"
+                          max="500"
+                          step="1"
+                          value={Number.isNaN(simCount) ? "" : simCount}
+                          disabled={running}
+                          onChange={(e) => setSimCount(e.target.valueAsNumber)}
+                        />
+                      </div>
+                      <small>
+                        Sân chỉ hiển thị tối đa 40 đệ tử, phần dư được đếm
+                        thêm.
+                      </small>
+                    </div>
                     <button
                       className="button primary"
                       disabled={
-                        !connected || state?.connector.mode === "tiktok"
+                        !connected ||
+                        busy ||
+                        state?.connector.mode === "tiktok" ||
+                        (!running && !simCountValid)
                       }
-                      onClick={() => setRunning(!running)}
+                      onClick={() =>
+                        void run(
+                          () =>
+                            api("simulator", {
+                              running: !running,
+                              giftId,
+                              disciples: simCountValid ? simCount : undefined,
+                            }),
+                          running
+                            ? "Đã dừng mô phỏng."
+                            : "Đã chạy mô phỏng.",
+                        )
+                      }
                     >
                       {running ? <Pause size={17} /> : <Play size={17} />}
                       {running ? "Dừng mô phỏng" : "Chạy mô phỏng"}
                     </button>
+                    {!simResetArmed ? (
+                      <button
+                        className="button secondary"
+                        disabled={
+                          !connected ||
+                          busy ||
+                          state?.connector.mode === "tiktok"
+                        }
+                        onClick={() => setSimResetArmed(true)}
+                      >
+                        <RotateCcw size={16} /> Đặt lại mô phỏng
+                      </button>
+                    ) : (
+                      <span
+                        className="session-confirm"
+                        role="group"
+                        aria-label="Xác nhận đặt lại mô phỏng"
+                      >
+                        <button
+                          className="button primary"
+                          disabled={!connected || busy}
+                          onClick={() =>
+                            void run(
+                              () => api("simulator/reset"),
+                              "Đã đặt lại số liệu mô phỏng.",
+                            ).then(() => setSimResetArmed(false))
+                          }
+                        >
+                          Xác nhận đặt lại
+                        </button>
+                        <button
+                          className="button secondary"
+                          disabled={busy}
+                          onClick={() => setSimResetArmed(false)}
+                        >
+                          Hủy
+                        </button>
+                      </span>
+                    )}
                     <span>
                       {running
                         ? `${(state?.visitors.length ?? 0) + (state?.visitorOverflow ?? 0)} đệ tử đang tọa thiền và rèn luyện tại Võ Đang Sơn.`
@@ -1414,7 +1391,6 @@ export function Admin() {
                     state?.connector.state === "connecting"
                   }
                   onClick={() => {
-                    setRunning(false);
                     void run(() => api("connector", { mode: "tiktok" }));
                   }}
                 >

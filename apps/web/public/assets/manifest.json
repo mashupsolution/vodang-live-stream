@@ -27,13 +27,53 @@
     },
     {
       "file": "cultivators.png",
-      "role": "two Wudang Daoist cultivator identities (female daoist, male daoist) across 4 poses (standing, meditating, absorbing aura, offering spiritual token)",
+      "role": "Tier 1: Phàm Nhân – Luyện Khí Daoist cultivator identities (female, male) in navy/white robes across 4 poses",
       "size": [2048, 1024],
       "frameSize": [512, 512],
       "pivot": [0.5, 0.95703125],
       "source": "cultivators-vudang-raw.jpg -> cultivators-source.png",
       "prompt": "2.5D Wudang Daoist character sprite atlas, 4 equal cols x 2 equal rows on #FF00FF backdrop. Row 1: female daoist in navy/white robes with Taiji embroidery, hair bun with hairpin and navy ribbons; Row 2: male daoist in navy/white robes with topknot and Daoist crown. Col 1: standing hands behind back; Col 2: lotus meditation posture; Col 3: deep cultivation absorbing golden aura; Col 4: offering glowing golden Taiji token. Rear view facing altar.",
       "status": "chroma unmixed; sliced 4x2; uniform row scale applied; baseline normalized to y=490 (pivot y=0.957); verified min=0, max=255 alpha; zero magenta fringe on QA preview"
+    },
+    {
+      "file": "cultivators-t2.png",
+      "role": "Tier 2: Trúc Cơ – Kim Đan Daoist cultivators in deep jade-green/white layered robes with thin silver trim and jade pendant",
+      "size": [2048, 1024],
+      "frameSize": [512, 512],
+      "pivot": [0.5, 0.95703125],
+      "source": "cultivators-t2-raw.jpg -> cultivators-t2-source.png",
+      "prompt": "Tier 2 Trúc Cơ / Kim Đan Daoist cultivators. Outfit: deep jade-green and white layered robe with thin silver trim, wider sleeves, a silver sash with a hanging jade pendant. Hair: long black hair tied in a high topknot held by a silver guan crown with a jade bead; two long ribbons in jade green. Subtle pale-green qi glow around the aura frame.",
+      "status": "chroma unmixed; sliced 4x2; uniform row scale applied; baseline normalized to y=490; verified min=0, max=255 alpha"
+    },
+    {
+      "file": "cultivators-t3.png",
+      "role": "Tier 3: Nguyên Anh – Hóa Thần Daoist cultivators in rich violet/purple inner robes, white-and-gold đại tụ sam gauze cape, tử kim quan crown",
+      "size": [2048, 1024],
+      "frameSize": [512, 512],
+      "pivot": [0.5, 0.95703125],
+      "source": "cultivators-t3-raw.jpg -> cultivators-t3-source.png",
+      "prompt": "Tier 3 Nguyên Anh / Hóa Thần Daoist cultivators. Outfit: rich violet/purple inner robe with gold cloud embroidery, white-and-gold outer gauze cape (đại tụ sam) with very wide flowing sleeves, gold-threaded Bagua belt. Hair: long hair half-up in an ornate gold-and-jade crown (tử kim quan) with a long hairpin, the rest flowing down the back with floating violet ribbons; female version adds dangling jade tassels. A faint small violet halo ring behind the head.",
+      "status": "chroma unmixed; sliced 4x2; uniform row scale applied; baseline normalized to y=490; verified min=0, max=255 alpha"
+    },
+    {
+      "file": "cultivators-t4.png",
+      "role": "Tier 4: Luyện Hư – Hợp Thể Daoist cultivators in pearl-white/pale-gold ceremonial robes, liên hoa quan crown, phi bạch scarves",
+      "size": [2048, 1024],
+      "frameSize": [512, 512],
+      "pivot": [0.5, 0.95703125],
+      "source": "cultivators-t4-raw.jpg -> cultivators-t4-source.png",
+      "prompt": "Tier 4 Luyện Hư / Hợp Thể Daoist cultivators. Outfit: pearl-white and pale-gold ceremonial robe, layered shoulder mantle with lotus and cloud patterns, long train, translucent flowing scarves (phi bạch) drifting in the air, gold Taiji disc embroidered large on the back. Hair: very long hair flowing to the waist, topped with a tall golden lotus crown (liên hoa quan); a pair of tiny floating jade swords or petals hovering near the shoulders.",
+      "status": "chroma unmixed; sliced 4x2; uniform row scale applied; baseline normalized to y=490; verified min=0, max=255 alpha"
+    },
+    {
+      "file": "cultivators-t5.png",
+      "role": "Tier 5: Đại Thừa – Độ Kiếp Daoist cultivators in gold and deep crimson imperial robes, radiant nine-pointed crown, golden halo",
+      "size": [2048, 1024],
+      "frameSize": [512, 512],
+      "pivot": [0.5, 0.95703125],
+      "source": "cultivators-t5-raw.jpg -> cultivators-t5-source.png",
+      "prompt": "Tier 5 Đại Thừa / Độ Kiếp Daoist cultivators. Outfit: imperial celestial robe in gold and deep crimson with black-gold trim, high embroidered collar, phoenix/crane motifs, a long star-patterned cape billowing behind, multiple layered sleeves, jade-and-gold belt with talismans. Hair: long silver-white hair (ageless sage look) with a radiant nine-pointed golden crown, flowing locks; a large soft golden halo and faint lightning/star particles around the body.",
+      "status": "chroma unmixed; sliced 4x2; uniform row scale applied; baseline normalized to y=490; verified min=0, max=255 alpha"
     },
     {
       "file": "music.mp3",
@@ -46,5 +86,5 @@
       "loop": "3.0s equal-power cosine crossfade; 0-click seamless loop; normalized to -6 dBFS peak with -18.5 dBFS RMS headroom"
     }
   ],
-  "provenance": "AI-generated original Wudang Sect art for Võ Đang Phái LIVE with strict chroma keying, normalized deterministically via sharp. Original high-res source PNGs retained. Procedural stereo audio synthesized via node + ffmpeg. Total decoded texture memory is 16.89 MB (< 32 MB budget)."
+  "provenance": "AI-generated original Wudang Sect art for Võ Đang Phái LIVE with strict chroma keying, normalized deterministically via sharp. Original high-res source PNGs retained. Procedural stereo audio synthesized via node + ffmpeg. 5 cultivator tiers (Phàm Nhân/Luyện Khí, Trúc Cơ/Kim Đan, Nguyên Anh/Hóa Thần, Luyện Hư/Hợp Thể, Đại Thừa/Độ Kiếp). Total decoded texture memory is 48.89 MB (< 64 MB budget)."
 }

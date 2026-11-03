@@ -28,5 +28,49 @@
       255
     ],
     "decodedBytes": 8388608
+  },
+  {
+    "file": "cultivators-t2.png",
+    "width": 2048,
+    "height": 1024,
+    "hasAlpha": true,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "decodedBytes": 8388608
+  },
+  {
+    "file": "cultivators-t3.png",
+    "width": 2048,
+    "height": 1024,
+    "hasAlpha": true,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "decodedBytes": 8388608
+  },
+  {
+    "file": "cultivators-t4.png",
+    "width": 2048,
+    "height": 1024,
+    "hasAlpha": true,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "decodedBytes": 8388608
+  },
+  {
+    "file": "cultivators-t5.png",
+    "width": 2048,
+    "height": 1024,
+    "hasAlpha": true,
+    "alphaRange": [
+      0,
+      255
+    ],
+    "decodedBytes": 8388608
   }
 ]

@@ -9,7 +9,7 @@ import {
 import { TempleClient } from "./api";
 import { mountGame } from "./game";
 import { Soundscape } from "./audio";
-import { StreamThanks } from "./Leaderboard";
+import { GiftBoard } from "./Leaderboard";
 
 export function TempleView({
   client,
@@ -282,6 +282,24 @@ export function TempleView({
         <section
           className="stream-information"
           data-testid="stream-information"
+        >
+          <GiftBoard state={state} />
+          <p className="stream-comment-guide">
+            Bình luận để bái sư · <b>!quyen</b> (<b>!tu</b>) · <b>!kiem</b> (
+            <b>!dan</b>) · <b>!dotpha</b> (<b>!dokiep</b>) · <b>!loithe</b> (
+            <b>!daotam</b>)
+            <span>
+              Chỉ xem cũng góp sức: thả tim ♥{" "}
+              {(state?.session.hearts.count ?? 0).toLocaleString("vi-VN")}
+              {" / "}
+              {(state?.session.hearts.goal ?? 100).toLocaleString("vi-VN")}{" "}
+              nuôi Chân Vũ Trận · 10 tim = +1 tinh tấn
+            </span>
+          </p>
+        </section>
+        <section
+          className="stream-events"
+          data-testid="stream-events"
           aria-live="polite"
         >
           {!client.connected ? (
@@ -325,47 +343,15 @@ export function TempleView({
                 </div>
               </div>
             )
-          ) : (
-            <>
-              {prayer &&
-              (clockTick <= prayerSpotlightUntil || quietTipIndex % 2 === 1) ? (
-                <div
-                  className="public-prayer"
-                  aria-label="Lời nguyện được duyệt"
-                >
-                  <Heart size={15} />
-                  <p>
-                    <span className="vow-excerpt">“{prayer.text}”</span>
-                    <span className="vow-author">{prayer.userName}</span>
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <StreamThanks state={state} rotation={quietTipIndex} />
-                  <p className="stream-comment-guide">
-                    Bình luận để bái sư · <b>!quyen</b> (<b>!tu</b>) ·{" "}
-                    <b>!kiem</b> (<b>!dan</b>)
-                    <span>
-                      {quietTipIndex % 2 === 0 ? (
-                        <>
-                          <b>!dotpha</b> (<b>!dokiep</b>) · <b>!lephap</b> (<b>!phapbao</b>) ·{" "}
-                          <b>!loithe</b> (<b>!daotam</b>)
-                        </>
-                      ) : (
-                        <>
-                          Chỉ xem cũng góp sức: thả tim ♥{" "}
-                          {(state?.session.hearts.count ?? 0).toLocaleString("vi-VN")}
-                          {" / "}
-                          {(state?.session.hearts.goal ?? 100).toLocaleString("vi-VN")}{" "}
-                          nuôi Chân Vũ Trận · 10 tim = +1 tinh tấn
-                        </>
-                      )}
-                    </span>
-                  </p>
-                </>
-              )}
-            </>
-          )}
+          ) : prayer && clockTick <= prayerSpotlightUntil ? (
+            <div className="public-prayer" aria-label="Lời nguyện được duyệt">
+              <Heart size={15} />
+              <p>
+                <span className="vow-excerpt">“{prayer.text}”</span>
+                <span className="vow-author">{prayer.userName}</span>
+              </p>
+            </div>
+          ) : null}
         </section>
       </div>
       {!preview && !overlay && (

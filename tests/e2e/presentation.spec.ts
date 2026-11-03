@@ -264,20 +264,17 @@ test("reduced motion seats new arrivals immediately", async ({
   ).toBe("idle");
 });
 
-test("board rotation continues across temporary action banners and banners expire", async ({
+test("fixed board stays visible across temporary action banners and banners expire", async ({
   page,
   temple,
 }) => {
   await page.clock.install({ time: new Date(fixedTime) });
   await page.goto("/overlay");
   await page.waitForFunction(() => window.__TEMPLE_STATS__?.ready);
-  await expect(page.locator(".stream-thanks-heading")).toContainText(
-    "Công huân",
+  await expect(page.locator(".stream-thanks-heading").first()).toContainText(
+    "Bảng Công Trạng",
   );
-  await page.clock.fastForward(10000);
-  await expect(page.locator(".stream-thanks-heading")).toContainText(
-    "Tinh tấn",
-  );
+  await expect(page.locator(".gift-guide")).toContainText("Hoa Hồng");
   temple.engine.ingest({
     id: "rotation-action",
     type: "comment",
@@ -287,12 +284,8 @@ test("board rotation continues across temporary action banners and banners expir
     text: "!tu",
   });
   await expect(page.locator(".offering-note")).toContainText("Hàn Lập");
-  await expect(page.locator(".offering-note")).toContainText(
-    "Đệ Tử Nhập Môn",
-  );
+  await expect(page.locator(".gift-guide")).toBeVisible();
   await page.clock.fastForward(10000);
   await expect(page.locator(".offering-note")).toHaveCount(0);
-  await expect(page.locator(".stream-thanks-heading")).toContainText(
-    "Phong thần",
-  );
+  await expect(page.locator(".gift-guide")).toContainText("Hoa Hồng");
 });

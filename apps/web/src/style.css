@@ -645,8 +645,14 @@ fieldset {
   align-items: center;
   gap: 13px;
 }
+.demo-control {
+  flex-wrap: wrap;
+}
 .demo-control .button {
   flex-shrink: 0;
+}
+.demo-control > .audience-simulator {
+  flex: 1 0 100%;
 }
 .demo-control > span {
   font-size: 10px;
@@ -1240,18 +1246,13 @@ code {
   right: 5%;
   height: 15.8cqw;
   max-height: 15.8cqw;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.5cqw;
-  padding: 0.6cqw 1.2cqw;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1.15fr);
+  grid-template-rows: minmax(0, 1fr) auto;
+  gap: 0.8cqw;
   overflow: hidden;
-  border: 1px solid rgba(194, 222, 217, 0.24);
-  border-radius: 1.2cqw;
   color: #ecfdf5;
-  background: rgba(8, 27, 27, 0.5);
   text-shadow: 0 1px 3px #041011;
-  backdrop-filter: blur(2px);
 }
 .offering-note {
   width: 100%;
@@ -1340,11 +1341,29 @@ code {
   left: 5%;
   width: 90%;
 }
+.stream-events {
+  position: absolute;
+  top: 44.5cqw;
+  left: 5%;
+  right: 5%;
+  z-index: 3;
+  color: #ecfdf5;
+  text-shadow: 0 1px 3px #041011;
+}
+.stream-events .offering-note,
+.stream-events .live-announcement,
+.stream-events .public-prayer,
+.stream-events .scene-connection {
+  background: rgba(8, 27, 27, 0.78);
+  border-radius: 1.2cqw;
+}
 .stream-thanks {
   align-self: stretch;
+  overflow: hidden;
+  backdrop-filter: blur(2px);
   width: 100%;
   min-width: 0;
-  padding: 0.7cqw 1.3cqw 0.5cqw;
+  padding: 0.4cqw 1.3cqw 0.3cqw;
   border: 1px solid rgba(42, 105, 98, 0.46);
   border-radius: 0.8cqw;
   color: #ecfdf5;
@@ -1392,19 +1411,55 @@ code {
   color: #f6d27a;
   font-weight: 600;
 }
+.gift-tiles {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1cqw;
+  text-align: center;
+}
+.gift-tiles li {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  line-height: 1.15;
+}
+.gift-icon {
+  font-size: 3.2cqw;
+  line-height: 1.05;
+}
+.gift-tiles b {
+  max-width: 100%;
+  color: #fef08a;
+  font-size: 1.55cqw;
+  font-weight: 600;
+  white-space: nowrap;
+}
+.gift-tiles small {
+  color: #a7f3d0;
+  font-size: 1.45cqw;
+  white-space: nowrap;
+}
 .thanks-empty {
   margin: 0.6cqw 0;
   color: #a7f3d0;
   font-size: 1.6cqw;
 }
 .stream-comment-guide {
-  flex: 0 0 auto;
+  grid-column: 1 / -1;
   max-height: 4.4cqw;
   margin: 0;
+  padding: 0.3cqw 1.3cqw;
+  border: 1px solid rgba(42, 105, 98, 0.46);
+  border-radius: 0.8cqw;
+  background: rgba(13, 34, 36, 0.55);
   overflow: hidden;
   color: #ecfdf5;
-  font-size: 1.65cqw;
-  line-height: 1.25;
+  font-size: 1.55cqw;
+  line-height: 1.15;
   text-shadow: 0 1px 4px #041011;
 }
 .stream-comment-guide b {
@@ -1802,8 +1857,8 @@ code {
 
 .stream-thanks .thanks-list {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.2cqw;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
 }
 .stream-thanks > small {
   display: none;

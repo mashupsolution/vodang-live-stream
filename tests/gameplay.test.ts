@@ -453,3 +453,96 @@ test("gift points promote donor tiers once, boost practice and persist", () => {
     store.close();
   }
 });
+
+test("default TikTok gifts are seeded and added to older databases", () => {
+  const { store, engine } = fixture();
+  try {
+    const ids = (engine.snapshot(true) as AdminSnapshot).mappings.map(
+      (m) => m.giftId,
+    );
+    for (const id of ["5655", "5487", "5660"]) assert.ok(ids.includes(id));
+    engine.updateMappings([
+      {
+        giftId: "custom",
+        name: "Tự Tạo",
+        action: "sword",
+        intensity: 3,
+        points: 7,
+      },
+    ]);
+    const mappings = (
+      new Engine(store, () => 100000).snapshot(true) as AdminSnapshot
+    ).mappings;
+    assert.equal(mappings[0].giftId, "custom");
+    assert.ok(mappings.some((m) => m.giftId === "5487"));
+  } finally {
+    store.close();
+  }
+});
+
+test("simulator honors the requested disciple count and clamps it", async () => {
+  const { Simulator } = await import("../apps/server/src/simulator.ts");
+  const demoCount = (engine: ReturnType<typeof fixture>["engine"]) =>
+    engine.snapshot().visitors.filter((v) => v.id.startsWith("demo:visitor:"))
+      .length;
+  for (const [asked, expected] of [
+    [3, 3],
+    [1, 1],
+    [0, 1],
+  ] as const) {
+    const { engine } = fixture();
+    const sim = new Simulator(engine, () => 100000);
+    sim.start(undefined, undefined, asked);
+    sim.step();
+    assert.equal(demoCount(engine), expected, `asked ${asked}`);
+    sim.stop();
+  }
+  const { engine } = fixture();
+  const sim = new Simulator(engine, () => 100000);
+  sim.start(undefined, undefined, 9999);
+  sim.step();
+  assert.ok(engine.snapshot().visitors.length > 0);
+  assert.ok(
+    engine.snapshot().visitors.length + engine.snapshot().visitorOverflow <= 500,
+  );
+  sim.stop();
+});
+
+test("simulator stop clears demo disciples but keeps scores; reset clears both", async () => {
+  const { Simulator } = await import("../apps/server/src/simulator.ts");
+  const { engine } = fixture();
+  const sim = new Simulator(engine, () => 100000);
+  engine.ingest(comment("real-1", "!tu", "real-user", "Người Thật"));
+  sim.start();
+  sim.step();
+  sim.step();
+  assert.equal(engine.simulating, true);
+  assert.ok(engine.hasDemoVisitors());
+  const before = engine.snapshot().totals.visits;
+  sim.step();
+  assert.equal(engine.snapshot().totals.visits, before, "no re-join while running");
+  const participation = engine.snapshot().session.participation.length;
+  assert.ok(participation > 0);
+
+  sim.stop();
+  assert.equal(engine.simulating, false);
+  assert.ok(!engine.hasDemoVisitors());
+  assert.ok(engine.snapshot().visitors.some((v) => v.id === "real-user"));
+  assert.equal(engine.snapshot().session.participation.length, participation);
+  sim.step();
+  assert.ok(!engine.hasDemoVisitors(), "stopped simulator emits nothing");
+
+  sim.start();
+  sim.step();
+  assert.equal(
+    engine.snapshot().session.participation.length >= participation,
+    true,
+    "restart keeps scores",
+  );
+  engine.resetDemo();
+  const snap = engine.snapshot();
+  assert.equal(snap.session.participation.length, 0);
+  assert.equal(snap.session.gifts.length, 0);
+  assert.ok(!engine.hasDemoVisitors());
+  sim.stop();
+});

@@ -1,19 +1,7 @@
 import {
-  DONOR_TIERS,
-  type CultivatorSummary,
-  type DonorEntry,
   type LeaderboardEntry,
   type Snapshot,
 } from "../../../packages/shared/src/index.ts";
-
-type BoardKind = "donors" | "gifts" | "participation" | "realms";
-
-const titles: Record<BoardKind, string> = {
-  donors: "Cảm ơn ủng hộ",
-  gifts: "Công huân · lễ vật",
-  participation: "Tinh tấn · quyền kiếm",
-  realms: "Phong thần · đạo hạnh",
-};
 
 function LeaderboardRows({
   entries,
@@ -23,7 +11,11 @@ function LeaderboardRows({
   limit?: number;
 }) {
   if (!entries.length) {
-    return <p className="thanks-empty">Chưa có lượt ghi nhận trong phiên.</p>;
+    return (
+      <p className="thanks-empty">
+        Chưa có ai lên bảng · gửi Hoa Hồng 🌹 hoặc gõ !quyen để ghi danh.
+      </p>
+    );
   }
   return (
     <ol className="thanks-list">
@@ -38,91 +30,46 @@ function LeaderboardRows({
   );
 }
 
-function DonorRows({ donors }: { donors: DonorEntry[] }) {
-  if (!donors.length) {
-    return <p className="thanks-empty">Chưa có lễ vật trong phiên.</p>;
-  }
-  return (
-    <ol className="thanks-list donor-list">
-      {[...donors].reverse().slice(0, 4).map((donor) => {
-        const tier = DONOR_TIERS[donor.tier] ?? DONOR_TIERS[0]!;
-        return (
-          <li key={`${donor.userId}-${donor.at}`}>
-            <span className="thanks-rank" style={{ color: tier.color }}>
-              ✦
-            </span>
-            <span className="thanks-name">
-              {donor.userName}
-              <small className="stream-realm-name" style={{ color: tier.color }}>
-                {tier.index > 0 ? tier.name : donor.giftName}
-              </small>
-            </span>
-            <strong>×{donor.count}</strong>
-          </li>
-        );
-      })}
-    </ol>
-  );
-}
+const GIFT_TILES = [
+  { icon: "🌹", name: "Hoa Hồng", note: "+1 sức mạnh" },
+  { icon: "🫰", name: "Tim Ngón Tay", note: "+5 sức mạnh" },
+  { icon: "🍩", name: "Bánh Vòng", note: "+30 · Đá Đột Phá" },
+] as const;
 
-function RealmRows({ realms }: { realms: CultivatorSummary[] }) {
-  if (!realms.length) {
-    return <p className="thanks-empty">Chưa có lượt ghi nhận trong phiên.</p>;
-  }
+/** Fixed stream boards: top gift contributors, and a separate frame of gift icons */
+export function GiftBoard({ state }: { state?: Snapshot }) {
+  const gifts = state?.session.gifts ?? [];
   return (
-    <ol className="thanks-list">
-      {realms.slice(0, 3).map((cultivator, index) => (
-        <li key={cultivator.userId}>
-          <span className="thanks-rank">{index + 1}</span>
-          <span className="thanks-name">
-            {cultivator.userName}
-            <small className="stream-realm-name">{cultivator.realmName}</small>
-          </span>
-          <strong>{cultivator.tuVi.toLocaleString("vi-VN")}</strong>
-        </li>
-      ))}
-    </ol>
-  );
-}
-
-/** Compact stream board (Thiên Bảng); rotates across 3 views when motion is permitted */
-export function StreamThanks({
-  state,
-  rotation = 0,
-}: {
-  state?: Snapshot;
-  rotation?: number;
-}) {
-  const kind: BoardKind = (
-    ["donors", "gifts", "participation", "realms"] as const
-  )[rotation % 4];
-
-  return (
-    <section className="stream-thanks" aria-label="Bảng tri ân">
-      <div className="stream-thanks-heading">
-        <strong>Võ Đang Bảng</strong>
-        <span>{titles[kind]}</span>
-      </div>
-      {kind === "donors" ? (
-        <DonorRows donors={state?.session.recentDonors ?? []} />
-      ) : kind === "realms" ? (
-        <RealmRows realms={state?.realms ?? []} />
-      ) : (
-        <LeaderboardRows
-          limit={3}
-          entries={
-            kind === "gifts"
-              ? (state?.session.gifts ?? [])
-              : (state?.session.participation ?? [])
-          }
-        />
-      )}
-      <small>
-        {state?.session.source === "tiktok"
-          ? "Phiên TikTok LIVE"
-          : "Phiên mô phỏng"}
-      </small>
-    </section>
+    <>
+      <section className="stream-thanks" aria-label="Bảng công trạng">
+        <div className="stream-thanks-heading">
+          <strong>Bảng Công Trạng</strong>
+          <span>Sức mạnh</span>
+        </div>
+        {gifts.length ? (
+          <LeaderboardRows limit={3} entries={gifts} />
+        ) : (
+          <p className="thanks-empty">Chưa có ai lên bảng, hãy là người đầu tiên!</p>
+        )}
+      </section>
+      <section className="stream-thanks gift-guide" aria-label="Gửi quà">
+        <div className="stream-thanks-heading">
+          <strong>Gửi quà tăng sức mạnh</strong>
+          <span>Đá đột phá</span>
+        </div>
+        <ul className="gift-tiles">
+          {GIFT_TILES.map((gift) => (
+            <li key={gift.name}>
+              <span className="gift-icon" aria-hidden="true">
+                {gift.icon}
+              </span>
+              <b>{gift.name}</b>
+              <small>{gift.note}</small>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </>
   );
 }
 

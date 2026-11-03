@@ -1,5 +1,9 @@
 # Project status
 
+## OBS setup — removed (2026-11-03)
+- OBS was installed and configured (profile/scene `TuTien`, Browser Source `http://127.0.0.1:3000/overlay?audio=1`) but the user decided to uninstall it; the config under `~/Library/Application Support/obs-studio` was deleted. TikTok stream-key access (PC LIVE) was never confirmed for the account; real LIVE remains unverified.
+- Game server unchanged: dev server on `PORT=3000` from `.env` (README says 3001).
+
 ## Heart goals for watch-only viewers — implemented (2026-11-03)
 - Per-LIVE heart count (`session.hearts {count, goal}`, `nextHeartGoal` in shared): goals 100, 500, every 1000 → +5 progress, ceremony, narrator thanks. Every 10 hearts from one viewer → +1 participation (tinh tấn). Narrator reminder alternates share/heart every 5 min. HUD quiet tip and README table document it.
 - Checks: `npm run check` clean; `npm test` 69/69. `npm run test:e2e`: 17 passed, 8 failed (audio, engagement ×2, narration ×3, operator baseline, presentation breakthrough). The failures inspected (offering-note text, thanks-list count) are in Wudang-era code, not hearts; operator baseline not inspected, may need review for the longer quiet tip.
@@ -168,3 +172,8 @@
 - Checks: `tsc --noEmit` clean; **67/67 unit tests** (4 new in `tests/zerotts.test.ts` with a fake worker). Real model run on macOS: load 4.9s, 2.8s synth, valid 48 kHz WAV via `Narrator` (`docs/qa/zerotts-narration-sample.wav`).
 - Not verified: browser playback of the WAV in /overlay, Windows, Bun-compiled executables (model not bundled), long-session worker stability. Browser e2e not rerun.
 - Next concrete action: listen to the sample and run a live session with `?audio=1`.
+
+## Mô phỏng chạy ở server (2026-11-03)
+- Vòng mô phỏng chuyển từ trình duyệt sang `apps/server/src/simulator.ts`; `POST /api/simulator {running, giftId?}` và `POST /api/simulator/reset`. `AdminSnapshot.simulating?` (cộng thêm). Dừng = ngừng phát sự kiện + gỡ đệ tử `demo:*` (`Engine.clearDemo`), điểm/tu vi giữ nguyên. Chạy lại không nạp lại 50 đệ tử, gửi lại `audience` mỗi ~10 s để số người xem không tự mất. "Đặt lại mô phỏng" = `Engine.resetDemo` (phiên mới + xóa cultivator/visitor/cooldown `demo:*`). Đổi sang TikTok tự dừng mô phỏng.
+- Checks: `tsc` sạch; `npm test` 72/72; e2e "simulation can start and stop" pass; chạy thật qua API + Admin: Dừng → 0 đệ tử, không còn sự kiện mới, tải lại trang vẫn đúng trạng thái.
+- Chưa xong/không do thay đổi này: e2e `operator.spec.ts:92` (nhãn "Thêm quà"/"Lưu quy tắc" cũ so với UI "Thêm lễ vật") và baseline hình `operator.spec.ts:183` đang lệch (art mới + nút mới ở Admin) — chưa cập nhật baseline. "Đặt lại mô phỏng" chưa chạy thử trên DB thật vì sẽ xóa bảng phiên hiện tại.

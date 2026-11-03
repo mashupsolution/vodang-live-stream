@@ -10,7 +10,7 @@ const docsRef = new URL("../docs/reference/", import.meta.url);
  * Chroma-key unmixing and despill for #FF00FF magenta backdrops.
  * Eliminates fringe and unmixes edge transparency cleanly.
  */
-function unmixChroma(rawBuffer, width, height, channels) {
+function unmixChroma(rawBuffer, width, height, channels, strict = false) {
   const out = Buffer.alloc(width * height * 4);
   for (let i = 0; i < width * height; i++) {
     const srcIdx = i * channels;
@@ -19,8 +19,11 @@ function unmixChroma(rawBuffer, width, height, channels) {
     const g = rawBuffer[srcIdx + 1];
     const b = rawBuffer[srcIdx + 2];
 
-    // Magenta excess: m is high when R and B are high and G is low
-    const m = (Math.min(r, b) - g) / 255;
+    // Magenta excess: m is high when R and B are high and G is low.
+    // Strict mode (red/crimson art): dark reds with low blue are foreground,
+    // not translucent backdrop.
+    const m =
+      strict && Math.min(r, b) < 110 ? 0 : (Math.min(r, b) - g) / 255;
 
     if (m >= 0.86) {
       // Pure #FF00FF backdrop within JPEG tolerance
@@ -39,7 +42,7 @@ function unmixChroma(rawBuffer, width, height, channels) {
       const t = (m - 0.04) / (0.86 - 0.04);
       const a = 1 - t;
       const alpha = Math.round(a * 255);
-      const aSafe = Math.max(a, 0.08);
+      const aSafe = Math.max(a, strict ? 0.45 : 0.08);
 
       // Unmix #FF00FF contribution ((1 - a) * 255) from R and B
       let rClean = Math.min(
@@ -97,22 +100,163 @@ if (existsSync(rawDinhJpg)) {
     .toFile(dinhPng.pathname);
 }
 
-// 3. Prepare cultivators-source.png with chroma unmixing
-const rawCultivatorsJpg = existsSync(new URL("cultivators-vudang-raw.jpg", root))
-  ? new URL("cultivators-vudang-raw.jpg", root)
-  : new URL("cultivators_source_atlas_1793506710561.jpg", root);
-const cultivatorsSourcePng = new URL("cultivators-source.png", root);
-if (existsSync(rawCultivatorsJpg)) {
-  const cultImg = sharp(rawCultivatorsJpg.pathname);
-  const { data, info } = await cultImg
+// 3. Cultivator tiers configuration (5 tiers mapping 10 realms)
+const CULTIVATOR_TIERS = [
+  {
+    tier: 1,
+    name: "Phàm Nhân – Luyện Khí",
+    rawJpg: existsSync(new URL("cultivators-vudang-raw.jpg", root))
+      ? new URL("cultivators-vudang-raw.jpg", root)
+      : new URL("cultivators_source_atlas_1793506710561.jpg", root),
+    sourcePng: new URL("cultivators-source.png", root),
+    outputFiles: ["cultivators.png", "cultivators-t1.png"],
+    primaryOutput: "cultivators.png",
+  },
+  {
+    tier: 2,
+    name: "Trúc Cơ – Kim Đan",
+    rawJpg: new URL("cultivators-t2-raw.jpg", root),
+    sourcePng: new URL("cultivators-t2-source.png", root),
+    outputFiles: ["cultivators-t2.png"],
+    primaryOutput: "cultivators-t2.png",
+  },
+  {
+    tier: 3,
+    name: "Nguyên Anh – Hóa Thần",
+    rawJpg: new URL("cultivators-t3-raw.jpg", root),
+    sourcePng: new URL("cultivators-t3-source.png", root),
+    outputFiles: ["cultivators-t3.png"],
+    primaryOutput: "cultivators-t3.png",
+  },
+  {
+    tier: 4,
+    name: "Luyện Hư – Hợp Thể",
+    rawJpg: new URL("cultivators-t4-raw.jpg", root),
+    sourcePng: new URL("cultivators-t4-source.png", root),
+    outputFiles: ["cultivators-t4.png"],
+    primaryOutput: "cultivators-t4.png",
+  },
+  {
+    tier: 5,
+    name: "Đại Thừa – Độ Kiếp",
+    rawJpg: new URL("cultivators-t5-raw.jpg", root),
+    sourcePng: new URL("cultivators-t5-source.png", root),
+    outputFiles: ["cultivators-t5.png"],
+    primaryOutput: "cultivators-t5.png",
+    strictChroma: true,
+  },
+];
+
+async function processCultivatorTier(cfg) {
+  // Chroma unmixing from raw JPEG if available
+  if (existsSync(cfg.rawJpg)) {
+    console.log(`Processing raw JPEG for Tier ${cfg.tier} (${cfg.name})...`);
+    const cultImg = sharp(cfg.rawJpg.pathname);
+    const { data, info } = await cultImg
+      .raw()
+      .toBuffer({ resolveWithObject: true });
+    const unmixedCult = unmixChroma(
+      data,
+      info.width,
+      info.height,
+      info.channels,
+      cfg.strictChroma === true,
+    );
+    await sharp(unmixedCult, {
+      raw: { width: info.width, height: info.height, channels: 4 },
+    })
+      .png()
+      .toFile(cfg.sourcePng.pathname);
+  }
+
+  if (!existsSync(cfg.sourcePng)) {
+    throw new Error(`Missing source PNG for Tier ${cfg.tier}: ${cfg.sourcePng.pathname}`);
+  }
+
+  const cultSource = await sharp(cfg.sourcePng.pathname)
+    .ensureAlpha()
     .raw()
     .toBuffer({ resolveWithObject: true });
-  const unmixedCult = unmixChroma(data, info.width, info.height, info.channels);
-  await sharp(unmixedCult, {
-    raw: { width: info.width, height: info.height, channels: 4 },
+  const { width: cW, height: cH, channels: cC } = cultSource.info;
+  const cellW = Math.floor(cW / 4);
+  const cellH = Math.floor(cH / 2);
+  const frames = [];
+
+  for (let row = 0; row < 2; row++) {
+    const bounds = [];
+    for (let col = 0; col < 4; col++) {
+      let minX = cellW,
+        minY = cellH,
+        maxX = 0,
+        maxY = 0;
+      for (let y = 0; y < cellH; y++) {
+        for (let x = 0; x < cellW; x++) {
+          const a =
+            cultSource.data[((row * cellH + y) * cW + col * cellW + x) * cC + 3];
+          if (a > 32) {
+            minX = Math.min(minX, x);
+            minY = Math.min(minY, y);
+            maxX = Math.max(maxX, x);
+            maxY = Math.max(maxY, y);
+          }
+        }
+      }
+      if (maxY <= minY) throw new Error(`Missing cultivator frame Tier ${cfg.tier} ${row}:${col}`);
+      bounds.push({
+        left: col * cellW + minX,
+        top: row * cellH + minY,
+        width: maxX - minX + 1,
+        height: maxY - minY + 1,
+      });
+    }
+
+    const maxH = Math.max(...bounds.map((b) => b.height));
+    const scale = 448 / maxH;
+
+    for (let col = 0; col < 4; col++) {
+      const b = bounds[col];
+      const w = Math.round(b.width * scale);
+      const h = Math.round(b.height * scale);
+
+      const croppedPose = await sharp(cultSource.data, { raw: cultSource.info })
+        .extract(b)
+        .resize(w, h)
+        .png()
+        .toBuffer();
+
+      const tile = await sharp({
+        create: {
+          width: 512,
+          height: 512,
+          channels: 4,
+          background: { r: 0, g: 0, b: 0, alpha: 0 },
+        },
+      })
+        .composite([
+          { input: croppedPose, left: Math.round((512 - w) / 2), top: 490 - h },
+        ])
+        .png()
+        .toBuffer();
+
+      frames.push({ input: tile, left: col * 512, top: row * 512 });
+    }
+  }
+
+  const atlasBuf = await sharp({
+    create: {
+      width: 2048,
+      height: 1024,
+      channels: 4,
+      background: { r: 0, g: 0, b: 0, alpha: 0 },
+    },
   })
+    .composite(frames)
     .png()
-    .toFile(cultivatorsSourcePng.pathname);
+    .toBuffer();
+
+  for (const fileName of cfg.outputFiles) {
+    await sharp(atlasBuf).toFile(new URL(fileName, root).pathname);
+  }
 }
 
 // 4. Build runtime linh-son-hall.webp (1080x1920, opaque)
@@ -157,95 +301,21 @@ await sharp(dinhSource.data, { raw: dinhSource.info })
   .webp({ quality: 92, alphaQuality: 100 })
   .toFile(new URL("tu-linh-dinh.webp", root).pathname);
 
-// 6. Build runtime cultivators.png (4 cols x 2 rows, scaled per row, baseline at y=490)
-const cultSource = await sharp(cultivatorsSourcePng.pathname)
-  .ensureAlpha()
-  .raw()
-  .toBuffer({ resolveWithObject: true });
-const { width: cW, height: cH, channels: cC } = cultSource.info;
-const cellW = Math.floor(cW / 4);
-const cellH = Math.floor(cH / 2);
-const frames = [];
-
-for (let row = 0; row < 2; row++) {
-  const bounds = [];
-  for (let col = 0; col < 4; col++) {
-    let minX = cellW,
-      minY = cellH,
-      maxX = 0,
-      maxY = 0;
-    for (let y = 0; y < cellH; y++) {
-      for (let x = 0; x < cellW; x++) {
-        const a =
-          cultSource.data[((row * cellH + y) * cW + col * cellW + x) * cC + 3];
-        if (a > 32) {
-          minX = Math.min(minX, x);
-          minY = Math.min(minY, y);
-          maxX = Math.max(maxX, x);
-          maxY = Math.max(maxY, y);
-        }
-      }
-    }
-    if (maxY <= minY) throw new Error(`Missing cultivator frame ${row}:${col}`);
-    bounds.push({
-      left: col * cellW + minX,
-      top: row * cellH + minY,
-      width: maxX - minX + 1,
-      height: maxY - minY + 1,
-    });
-  }
-
-  const maxH = Math.max(...bounds.map((b) => b.height));
-  const scale = 448 / maxH;
-
-  for (let col = 0; col < 4; col++) {
-    const b = bounds[col];
-    const w = Math.round(b.width * scale);
-    const h = Math.round(b.height * scale);
-
-    const croppedPose = await sharp(cultSource.data, { raw: cultSource.info })
-      .extract(b)
-      .resize(w, h)
-      .png()
-      .toBuffer();
-
-    const tile = await sharp({
-      create: {
-        width: 512,
-        height: 512,
-        channels: 4,
-        background: { r: 0, g: 0, b: 0, alpha: 0 },
-      },
-    })
-      .composite([
-        { input: croppedPose, left: Math.round((512 - w) / 2), top: 490 - h },
-      ])
-      .png()
-      .toBuffer();
-
-    frames.push({ input: tile, left: col * 512, top: row * 512 });
-  }
+// 6. Build runtime cultivator sprite atlases for each tier
+for (const cfg of CULTIVATOR_TIERS) {
+  await processCultivatorTier(cfg);
 }
 
-await sharp({
-  create: {
-    width: 2048,
-    height: 1024,
-    channels: 4,
-    background: { r: 0, g: 0, b: 0, alpha: 0 },
-  },
-})
-  .composite(frames)
-  .png()
-  .toFile(new URL("cultivators.png", root).pathname);
-
 // 7. Generate checkerboard QA preview sheet (docs/qa/cultivators-preview.png)
-const checkW = 2048,
-  checkH = 1024,
-  squareSize = 32;
+const checkW = 2048;
+const tierCount = CULTIVATOR_TIERS.length;
+const checkH = 1024 * tierCount;
+const squareSize = 32;
 const checkBuf = Buffer.alloc(checkW * checkH * 4);
+
 for (let y = 0; y < checkH; y++) {
-  const isBaseline = y === 490 || y === 1002;
+  const localY = y % 1024;
+  const isBaseline = localY === 490 || localY === 1002;
   for (let x = 0; x < checkW; x++) {
     const idx = (y * checkW + x) * 4;
     if (isBaseline) {
@@ -272,21 +342,27 @@ const checkBase = await sharp(checkBuf, {
   .png()
   .toBuffer();
 
+const previewComposites = CULTIVATOR_TIERS.map((cfg, idx) => ({
+  input: new URL(cfg.primaryOutput, root).pathname,
+  left: 0,
+  top: idx * 1024,
+}));
+
 await sharp(checkBase)
-  .composite([
-    { input: new URL("cultivators.png", root).pathname, left: 0, top: 0 },
-  ])
+  .composite(previewComposites)
   .png()
   .toFile(new URL("cultivators-preview.png", docsQa).pathname);
 
 // 8. Quality gates & assets.json report
 const reports = [];
 let totalDecodedBytes = 0;
-for (const [file, requireAlpha] of [
+const trackedFiles = [
   ["linh-son-hall.webp", false],
   ["tu-linh-dinh.webp", true],
-  ["cultivators.png", true],
-]) {
+  ...CULTIVATOR_TIERS.map((c) => [c.primaryOutput, true]),
+];
+
+for (const [file, requireAlpha] of trackedFiles) {
   const img = sharp(new URL(file, root).pathname);
   const meta = await img.metadata();
   const stats = await img.stats();
@@ -308,9 +384,9 @@ for (const [file, requireAlpha] of [
   });
 }
 
-if (totalDecodedBytes >= 32 * 1024 * 1024) {
+if (totalDecodedBytes >= 64 * 1024 * 1024) {
   throw new Error(
-    `Total decoded texture memory exceeds budget: ${totalDecodedBytes} >= 32MB`,
+    `Total decoded texture memory exceeds budget: ${totalDecodedBytes} >= 64MB`,
   );
 }
 
@@ -322,5 +398,5 @@ await writeFile(
 
 console.log("Assets report:", JSON.stringify(reports, null, 2));
 console.log(
-  `Total decoded bytes: ${(totalDecodedBytes / (1024 * 1024)).toFixed(2)} MB (< 32 MB budget)`,
+  `Total decoded bytes: ${(totalDecodedBytes / (1024 * 1024)).toFixed(2)} MB (< 64 MB budget)`,
 );

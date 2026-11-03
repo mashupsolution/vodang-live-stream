@@ -425,6 +425,7 @@ export interface Snapshot {
 }
 
 export interface AdminSnapshot extends Snapshot {
+  simulating?: boolean;
   mappings: GiftMapping[];
   pendingPrayers: Prayer[];
 }

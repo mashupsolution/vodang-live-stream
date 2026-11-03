@@ -34,6 +34,24 @@ test("ZeroTTS is opt-in by model, python or ZEROTTS_MODEL_PATH", () => {
   );
 });
 
+test("stale ZEROTTS paths fall back to the native or Edge provider", () => {
+  assert.equal(
+    zeroTtsConfigured({ ZEROTTS_PYTHON: "/nonexistent-zerotts/bin/python" }),
+    false,
+  );
+  assert.equal(
+    zeroTtsConfigured({ ZEROTTS_MODEL_PATH: "/nonexistent-zerotts/model" }),
+    false,
+  );
+  assert.equal(
+    zeroTtsConfigured({
+      ZEROTTS_PYTHON: "python3",
+      ZEROTTS_MODEL_PATH: "/nonexistent-zerotts/model",
+    }),
+    false,
+  );
+});
+
 test("provider reads worker results by id and reports worker errors", async () => {
   const dataDir = await mkdtemp(join(tmpdir(), "zerotts-test-"));
   const provider = createZeroTtsProvider({
