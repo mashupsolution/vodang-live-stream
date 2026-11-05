@@ -50,7 +50,7 @@ test("session boards count accepted actions and exact gift deltas; moderation an
     );
     assert.equal(engine.ingest(event("cool", "a", "!dan")).result, "cooldown");
     engine.ingest(event("vow1", "b", "!daotam Nguyện cầu đạo tâm kiên định"));
-    engine.ingest(event("vow2", "c", "!daotam Nguyện tu tiên đắc đạo"));
+    engine.ingest(event("vow2", "c", "!daotam Nguyện giữ đạo Võ Đang"));
     assert.deepEqual(
       engine.snapshot().session.participation.map((e) => e.userId),
       ["a"],

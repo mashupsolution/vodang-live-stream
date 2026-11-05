@@ -84,7 +84,7 @@ test("breakthrough uses the bounded upper information slot", async ({
     timestamp: fixedTime,
     user: { id: "seed:0", name: "Vân Tiêu" },
     giftId: "mock-tien-dan",
-    giftName: "Cửu Chuyển Kim Đan",
+    giftName: "Thái Cực Bát Quái Bàn",
     count: 1,
     streakId: "presentation",
     final: true,

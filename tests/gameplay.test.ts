@@ -186,11 +186,11 @@ test("deterministic tribulation breakthrough via injected rng", () => {
   }
 });
 
-test("Kim Đan+ breakthrough emits Tiên Âm announcement and Tier 9 caps at max-realm", () => {
+test("Nội Môn+ breakthrough emits Tiên Âm announcement and Tier 9 caps at max-realm", () => {
   const { store, engine } = fixture(() => 0.01);
   try {
     engine.updateSettings({ ...defaultSettings, cooldownSeconds: 0 });
-    // Use high tier gift to quickly raise tuVi to Trúc Cơ (tier 2, 35 tuVi) -> Kim Đan (tier 3, 80 tuVi)
+    // Use high tier gift to quickly raise tuVi to Ngoại Môn (tier 2, 35 tuVi) -> Nội Môn (tier 3, 80 tuVi)
     engine.ingest(
       gift(
         "g_huge",
@@ -203,12 +203,12 @@ test("Kim Đan+ breakthrough emits Tiên Âm announcement and Tier 9 caps at max
       ),
     );
     // mock-phi-kiem intensity=3, points=50. tuVi += 50 * 3 * 3 = 450.
-    // Instant Hộ Pháp breakthrough while tuVi >= next.minTuVi advances all realms!
+    // Instant Ngoại Môn breakthrough while tuVi >= next.minTuVi advances all realms!
     const cult = engine
       .snapshot()
       .realms.find((r) => r.userId === "cultivator-kd");
     assert.ok(cult);
-    assert.ok(cult.realmIndex >= 3); // At least Kim Đan or higher!
+    assert.ok(cult.realmIndex >= 3); // At least Nội Môn or higher!
 
     // Announcements should have recorded breakthrough
     const breakthroughs = engine

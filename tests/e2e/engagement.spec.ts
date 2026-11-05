@@ -60,7 +60,7 @@ test("TikTok instructions, gift-only flowers and session boards synchronize and 
   await overlay.reload();
   await expect(overlay.locator(".stream-thanks")).toContainText("Vân Tiêu");
 
-  // mock-tien-dan (intensity 2, 25 points -> 75 tuVi) gives instant Hộ Pháp breakthrough
+  // mock-tien-dan (intensity 2, 25 points -> 75 tuVi) gives instant Ngoại Môn breakthrough
   const tierUser = { id: "ho-phap-cultivator", name: "Bạch Tiểu Thuần" };
   await request.post("/api/events", {
     data: {
@@ -70,7 +70,7 @@ test("TikTok instructions, gift-only flowers and session boards synchronize and 
       timestamp: fixedTime,
       user: tierUser,
       giftId: "mock-tien-dan",
-      giftName: "Cửu Chuyển Kim Đan",
+      giftName: "Thái Cực Bát Quái Bàn",
       count: 1,
       streakId: "ho-phap-streak",
       final: true,

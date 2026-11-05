@@ -373,7 +373,7 @@ for (let i = 0; i < loopSamples; i++) {
 
 const tmpWavPath = "/tmp/tu-tien-ambient.wav";
 const outMp3Path = new URL(
-  "../apps/web/public/assets/music.mp3",
+  "../apps/web/public/assets/music-synth.mp3",
   import.meta.url,
 ).pathname;
 

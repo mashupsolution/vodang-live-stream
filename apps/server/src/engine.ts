@@ -974,7 +974,7 @@ export class Engine {
             Number((c.hoPhapBonus + 0.15 * intensity * count).toFixed(4)),
           );
 
-          // Instant Hộ Pháp Breakthrough (intensity >= 2)
+          // Instant Ngoại Môn Breakthrough (intensity >= 2)
           let realmsGained = 0;
           if (intensity >= 2) {
             while (

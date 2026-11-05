@@ -31,13 +31,8 @@ The visual system transitions from a traditional earthly temple to an ethereal *
 - **Normalization**: Each row is scaled uniformly to 448px height for standing poses; all 8 poses align precisely to a shared baseline at `y = 490` within the 512×512 cell. Pivot: `[0.5, 0.95703125]`.
 
 ### 4. Audio Soundscape (`music.mp3`)
-- **Format**: 48.0s seamless loop, 192kbps CBR stereo MP3 @ 44.1kHz.
-- **Musical Style**: D Major Pentatonic (`D, E, F#, A, B` octaves 2–6) contemplative Eastern Xianxia ambient.
-- **Layers**:
-  1. *Warm Misty Cloud Drone & Xiao Bamboo Flute*: Deep breathing D2/A2 drone + airy Xiao flute melodies with 4.5Hz vibrato and long envelopes.
-  2. *Plucked Guzheng Arpeggios*: Delicate multi-harmonic string plucks with mountain echo delay (380ms & 760ms, feedback 0.28).
-  3. *Distant Jade Wind Chimes*: Occasional shimmering inharmonic bell partials (D6, E6, A5) panning gently across the stereo field.
-- **Mix & Headroom**: Peak normalized to `-6.0 dBFS`, integrated RMS at `-18.5 dBFS`, leaving ample acoustic headroom for the *Linh Tiên Âm* Vietnamese TTS narrator and real-time WebAudio SFX. Seamless 3.0s cosine crossfade ensures zero loop seam clicks.
+- User-supplied background track: 3:03 loop, 256kbps stereo MP3 @ 44.1kHz, played by `Soundscape` (`apps/web/src/audio.ts`) through the ambient gain, ducked while the Linh Tiên Âm narrator speaks.
+- The earlier synthesized pentatonic loop can still be generated to `music-synth.mp3` by `scripts/generate-music.mjs`.
 
 ## Texture Memory Budget
 
@@ -55,4 +50,4 @@ The visual system transitions from a traditional earthly temple to an ethereal *
 - **Source Reference**: `docs/reference/linh-son-concept.jpg`.
 - **Generation Tool**: Google Imagen 3 via Antigravity image generation pipeline.
 - **Chroma Extraction**: Flat `#FF00FF` magenta extraction with per-pixel magenta excess unmixing and despill clamping (`scripts/normalize-assets.mjs`), verified zero pink haloing on checkerboard QA preview (`docs/qa/cultivators-preview.png`).
-- **Reproducibility**: `node scripts/normalize-assets.mjs` and `node scripts/generate-music.mjs` are 100% deterministic.
+- **Reproducibility**: `node scripts/normalize-assets.mjs` is deterministic; `music.mp3` is a user-supplied track (the optional synth `scripts/generate-music.mjs` writes `music-synth.mp3`).

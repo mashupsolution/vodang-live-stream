@@ -2,7 +2,7 @@ import Phaser from "phaser";
 
 /**
  * Tiên Hạc Đan Đỉnh (Red-Crowned Celestial Crane)
- * Procedural Sprite & Animation System for Tu Tiên Online LIVE.
+ * Procedural Sprite & Animation System for Võ Đang Phái LIVE.
  *
  * Designed for 1080×1920 portrait canvas.
  * Sky/cloud corridor: Y between 180 and 460.

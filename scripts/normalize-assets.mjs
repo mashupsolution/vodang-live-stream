@@ -82,12 +82,106 @@ if (existsSync(rawHallJpg)) {
     .toFile(new URL("vo-dang-concept.jpg", docsRef).pathname);
 }
 
-// 2. Prepare tu-linh-dinh.png with chroma unmixing
+// 2. Prepare tu-linh-dinh.png with Thai Cuc Song Long or chroma unmixing
+const rawThaiCuc = existsSync(new URL("thai-cuc-long-raw.png", root))
+  ? new URL("thai-cuc-long-raw.png", root)
+  : null;
 const rawDinhJpg = existsSync(new URL("chan-vu-dinh-raw.jpg", root))
   ? new URL("chan-vu-dinh-raw.jpg", root)
   : new URL("tu_linh_dinh_1793506705952.jpg", root);
 const dinhPng = new URL("tu-linh-dinh.png", root);
-if (existsSync(rawDinhJpg)) {
+const dinhWebp = new URL("tu-linh-dinh.webp", root);
+
+async function processThaiCucSongLong(rawPath, outPngPath, outWebpPath) {
+  console.log("Normalizing Thai Cuc Song Long asset into 880x880 RGBA sprite...");
+  const cropped = await sharp(rawPath)
+    .extract({ left: 0, top: 4, width: 335, height: 588 })
+    .toBuffer();
+
+  const motifH = 810;
+  const motifW = Math.round((motifH * 335) / 588); // 462
+
+  const resizedMotif = await sharp(cropped)
+    .resize(motifW, motifH, { kernel: "lanczos3" })
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+
+  const outW = 880;
+  const outH = 880;
+  const outBuf = Buffer.alloc(outW * outH * 4);
+
+  const offsetX = Math.round((outW - motifW) / 2);
+  const offsetY = 35;
+
+  const mData = resizedMotif.data;
+  const mW = resizedMotif.info.width;
+  const mH = resizedMotif.info.height;
+  const cx = 440;
+
+  for (let my = 0; my < mH; my++) {
+    const oy = my + offsetY;
+    if (oy < 0 || oy >= outH) continue;
+
+    for (let mx = 0; mx < mW; mx++) {
+      const ox = mx + offsetX;
+      if (ox < 0 || ox >= outW) continue;
+
+      const srcIdx = (my * mW + mx) * 4;
+      const dstIdx = (oy * outW + ox) * 4;
+
+      const r = mData[srcIdx];
+      const g = mData[srcIdx + 1];
+      const b = mData[srcIdx + 2];
+
+      const nx = (ox - cx) / (motifW * 0.5);
+      const ny = (oy - (offsetY + mH * 0.5)) / (mH * 0.5);
+
+      const dist = Math.pow(
+        Math.pow(Math.abs(nx), 3.5) + Math.pow(Math.abs(ny), 3.5),
+        1 / 3.5,
+      );
+
+      let alpha = 1;
+      if (dist >= 1.0) {
+        alpha = 0;
+      } else if (dist > 0.72) {
+        const t = (dist - 0.72) / (1.0 - 0.72);
+        alpha = 1 - t * t * (3 - 2 * t);
+      }
+
+      const luma = (r * 0.299 + g * 0.587 + b * 0.114) / 255;
+      if (dist > 0.6 && luma < 0.22) {
+        const darkFade = Math.min(1, luma / 0.22);
+        alpha *= 0.3 + 0.7 * darkFade;
+      }
+
+      const a = Math.round(alpha * 255);
+      if (a > 0) {
+        outBuf[dstIdx] = r;
+        outBuf[dstIdx + 1] = g;
+        outBuf[dstIdx + 2] = b;
+        outBuf[dstIdx + 3] = a;
+      }
+    }
+  }
+
+  await sharp(outBuf, { raw: { width: outW, height: outH, channels: 4 } })
+    .png()
+    .toFile(outPngPath);
+
+  await sharp(outBuf, { raw: { width: outW, height: outH, channels: 4 } })
+    .webp({ quality: 92, alphaQuality: 100 })
+    .toFile(outWebpPath);
+}
+
+if (rawThaiCuc) {
+  await processThaiCucSongLong(
+    rawThaiCuc.pathname,
+    dinhPng.pathname,
+    dinhWebp.pathname,
+  );
+} else if (existsSync(rawDinhJpg)) {
   const dinhImg = sharp(rawDinhJpg.pathname);
   const { data, info } = await dinhImg
     .raw()
@@ -266,40 +360,42 @@ await sharp(hallPng.pathname)
   .toFile(new URL("linh-son-hall.webp", root).pathname);
 
 // 5. Build runtime tu-linh-dinh.webp (cropped tight + padded, width 880)
-const dinhSource = await sharp(dinhPng.pathname)
-  .ensureAlpha()
-  .raw()
-  .toBuffer({ resolveWithObject: true });
-const { width: dW, height: dH, channels: dC } = dinhSource.info;
-let dMinX = dW,
-  dMinY = dH,
-  dMaxX = 0,
-  dMaxY = 0;
-for (let y = 0; y < dH; y++) {
-  for (let x = 0; x < dW; x++) {
-    const alpha = dinhSource.data[(y * dW + x) * dC + 3];
-    if (alpha > 16) {
-      dMinX = Math.min(dMinX, x);
-      dMinY = Math.min(dMinY, y);
-      dMaxX = Math.max(dMaxX, x);
-      dMaxY = Math.max(dMaxY, y);
+if (!rawThaiCuc) {
+  const dinhSource = await sharp(dinhPng.pathname)
+    .ensureAlpha()
+    .raw()
+    .toBuffer({ resolveWithObject: true });
+  const { width: dW, height: dH, channels: dC } = dinhSource.info;
+  let dMinX = dW,
+    dMinY = dH,
+    dMaxX = 0,
+    dMaxY = 0;
+  for (let y = 0; y < dH; y++) {
+    for (let x = 0; x < dW; x++) {
+      const alpha = dinhSource.data[(y * dW + x) * dC + 3];
+      if (alpha > 16) {
+        dMinX = Math.min(dMinX, x);
+        dMinY = Math.min(dMinY, y);
+        dMaxX = Math.max(dMaxX, x);
+        dMaxY = Math.max(dMaxY, y);
+      }
     }
   }
-}
-const cropLeft = Math.max(0, dMinX - 16);
-const cropTop = Math.max(0, dMinY - 16);
-const cropRight = Math.min(dW - 1, dMaxX + 16);
-const cropBottom = Math.min(dH - 1, dMaxY + 4);
-const cropW = cropRight - cropLeft + 1;
-const cropH = cropBottom - cropTop + 1;
-const dinhTargetW = 880;
-const dinhTargetH = Math.round(cropH * (dinhTargetW / cropW));
+  const cropLeft = Math.max(0, dMinX - 16);
+  const cropTop = Math.max(0, dMinY - 16);
+  const cropRight = Math.min(dW - 1, dMaxX + 16);
+  const cropBottom = Math.min(dH - 1, dMaxY + 4);
+  const cropW = cropRight - cropLeft + 1;
+  const cropH = cropBottom - cropTop + 1;
+  const dinhTargetW = 880;
+  const dinhTargetH = Math.round(cropH * (dinhTargetW / cropW));
 
-await sharp(dinhSource.data, { raw: dinhSource.info })
-  .extract({ left: cropLeft, top: cropTop, width: cropW, height: cropH })
-  .resize(dinhTargetW, dinhTargetH)
-  .webp({ quality: 92, alphaQuality: 100 })
-  .toFile(new URL("tu-linh-dinh.webp", root).pathname);
+  await sharp(dinhSource.data, { raw: dinhSource.info })
+    .extract({ left: cropLeft, top: cropTop, width: cropW, height: cropH })
+    .resize(dinhTargetW, dinhTargetH)
+    .webp({ quality: 92, alphaQuality: 100 })
+    .toFile(new URL("tu-linh-dinh.webp", root).pathname);
+}
 
 // 6. Build runtime cultivator sprite atlases for each tier
 for (const cfg of CULTIVATOR_TIERS) {

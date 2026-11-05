@@ -1,5 +1,23 @@
 # Project status
 
+## Đồng bộ cốt truyện Võ Đang (2026-11-05)
+- AGENTS.md, README.md, DESIGN.md, manifest (nhãn tier), comment code, test và ART_DIRECTION_WUDANG chuyển từ thuật ngữ Tu Tiên sang Võ Đang. Không đổi hành vi. Ngưỡng cảnh giới chuẩn là `packages/shared` (10/35/80/160/280/450/700/1050/1500); các con số 30…50.000 trong mục cũ của STATUS là lỗi thời. Lời dẫn nằm trong `engine.ts` (narrator.ts chỉ là TTS).
+- Còn nguyên có chủ đích: tên thư mục/tệp thực thi `TuTienOnline`, `data/tutien.sqlite`, tên gift id `mock-tien-dan`.
+
+## Thái Cực Âm Dương Song Long Altar Transformation — Complete (2026-11-05)
+- **Chuyển đổi Linh Đỉnh thành Thái Cực Âm Dương Song Long (`tu-linh-dinh.webp`):**
+  - Chuyển đổi mô hình đỉnh đồng thành biểu tượng thiêng liêng Thái Cực Đồ với Bạch Long và Hắc Long chầu quanh, Dạ Minh Châu phát sáng trên nền khí mây huyền ảo theo đúng ảnh tham chiếu người dùng.
+  - Xử lý tách viền mềm mại (superellipse feathering mask) giúp khói mây hòa quyện êm dịu vào mây trời núi Võ Đang (`linh-son-hall.webp`), không bị vệt khung chữ nhật thô.
+  - Chuẩn hóa sprite 880×880 RGBA với alpha hoàn chỉnh ($[0, 255]$), dung lượng VRAM GPU an toàn (3.10 MB, tổng 48.89 MB < 64 MB budget).
+  - Tích hợp cân đối vào `apps/web/src/game.ts` với kích thước $590 \times 590$ tại tọa độ trung tâm $y=770$, đồng bộ hoàn hảo cùng hệ thống 24 Phi Kiếm Bát Quái phân tầng 2.5D (kiếm lướt trước ngực và sau lưng rồng), Bagua Dais tại $y=1060$, và hiệu ứng thở lơ lửng dao động nhịp nhàng.
+- **Verification Evidence:**
+  - `docs/qa/thai-cuc-song-long-live.png`: Toàn cảnh livestream 1080×1920 in-engine với 40 đệ tử bái chầu Thái Cực Song Long.
+  - `docs/qa/thai-cuc-altar-zoom.png`: Ảnh chụp cận cảnh khu vực đài ngọc và biểu tượng rồng âm dương.
+  - `npm run check`: 0 lỗi TypeScript.
+  - `npm test`: 70/70 unit tests pass 100%.
+  - `npm run build`: Production build thành công (3.05s).
+- **Next Concrete Action:** Chưa xác minh LIVE thực tế (OBS đã gỡ, chưa xác nhận quyền stream-key TikTok). Chưa chạy lại test sau khi gộp vào bản có simulator.
+
 ## OBS setup — removed (2026-11-03)
 - OBS was installed and configured (profile/scene `TuTien`, Browser Source `http://127.0.0.1:3000/overlay?audio=1`) but the user decided to uninstall it; the config under `~/Library/Application Support/obs-studio` was deleted. TikTok stream-key access (PC LIVE) was never confirmed for the account; real LIVE remains unverified.
 - Game server unchanged: dev server on `PORT=3000` from `.env` (README says 3001).
@@ -177,3 +195,7 @@
 - Vòng mô phỏng chuyển từ trình duyệt sang `apps/server/src/simulator.ts`; `POST /api/simulator {running, giftId?}` và `POST /api/simulator/reset`. `AdminSnapshot.simulating?` (cộng thêm). Dừng = ngừng phát sự kiện + gỡ đệ tử `demo:*` (`Engine.clearDemo`), điểm/tu vi giữ nguyên. Chạy lại không nạp lại 50 đệ tử, gửi lại `audience` mỗi ~10 s để số người xem không tự mất. "Đặt lại mô phỏng" = `Engine.resetDemo` (phiên mới + xóa cultivator/visitor/cooldown `demo:*`). Đổi sang TikTok tự dừng mô phỏng.
 - Checks: `tsc` sạch; `npm test` 72/72; e2e "simulation can start and stop" pass; chạy thật qua API + Admin: Dừng → 0 đệ tử, không còn sự kiện mới, tải lại trang vẫn đúng trạng thái.
 - Chưa xong/không do thay đổi này: e2e `operator.spec.ts:92` (nhãn "Thêm quà"/"Lưu quy tắc" cũ so với UI "Thêm lễ vật") và baseline hình `operator.spec.ts:183` đang lệch (art mới + nút mới ở Admin) — chưa cập nhật baseline. "Đặt lại mô phỏng" chưa chạy thử trên DB thật vì sẽ xóa bảng phiên hiện tại.
+
+## Nhạc nền do người dùng cung cấp (2026-11-05)
+- `apps/web/public/assets/music.mp3` = `background.mp3` của người dùng (3:03, 256 kbps, 5.87 MB, md5 trùng); `audio.ts` không đổi. Manifest/docs cập nhật; `generate-music.mjs` giờ ghi `music-synth.mp3`.
+- Người dùng chịu trách nhiệm bản quyền khi phát LIVE. Chưa kiểm: nghe thật độ to/điểm lặp.

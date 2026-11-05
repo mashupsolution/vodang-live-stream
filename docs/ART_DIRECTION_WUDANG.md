@@ -3,7 +3,7 @@
 ## 1. Bối cảnh & Cảm hứng Thiết kế (Lore & Theme)
 Chuyển thể từ tiên hiệp tu chân sang **Võ Đang Phái (武当派)** — phong cách Đạo gia võ học thịnh hành trong các phòng livestream tương tác trên Douyin / TikTok Trung Quốc.
 - **Không gian**: Đỉnh núi Võ Đang Sơn (Kim Đỉnh Tử Tiêu Cung) mây ngàn bồng bềnh, vách đá dựng đứng, hàng tùng bách ngàn năm kiên cố.
-- **Tâm điểm**: **Chân Vũ Thái Cực Đàn** với đồ hình Âm Dương Bát Quái xoay chuyển huyền ảo, Chân Vũ Thần Kiếm và Lư hương đồng Bát Quái nghi ngút khói trầm.
+- **Tâm điểm**: **Thái Cực Âm Dương Song Long** (Bạch Long & Hắc Long chầu Thái Cực Đồ, Dạ Minh Châu phát sáng, khí mây hòa vào biển mây Kim Đỉnh; sprite `tu-linh-dinh.webp` 880×880 đặt trên đài ngọc Bát Quái; ghi chú: Chân Vũ/Huyền Vũ truyền thống là rùa–rắn, hai rồng là lựa chọn thẩm mỹ đã duyệt) trên **Chân Vũ Thái Cực Đàn** với đồ hình Âm Dương Bát Quái xoay chuyển huyền ảo, Chân Vũ Thần Kiếm và Lư hương đồng Bát Quái nghi ngút khói trầm.
 - **Trận pháp**: **Võ Đang Thất Tinh Kiếm Trận** (24 phi kiếm phân bổ trên 3 quỹ đạo đồng tâm) che chở và bảo vệ sơn môn.
 - **Linh vật**: **Tiên Hạc Đan Đỉnh Võ Đang** sải cánh lượn qua vầng dương và biển mây Kim Đỉnh.
 

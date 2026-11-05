@@ -4,7 +4,7 @@ This document records the exact generative prompts, constraints, and normalizati
 
 All assets are generated using built-in image generation with strict color constraints and deterministic post-processing scripts:
 - Visual normalization: `scripts/normalize-assets.mjs`
-- Audio synthesis: `scripts/generate-music.mjs`
+- Audio: `music.mp3` is a user-supplied track; `scripts/generate-music.mjs` (optional synth) writes `music-synth.mp3` only
 
 ---
 

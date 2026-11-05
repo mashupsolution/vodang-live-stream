@@ -31,7 +31,7 @@ test("60 seconds with 40 visitors and repeated gift bursts", async ({
       });
     const gifts = [
       { giftId: "mock-linh-thach", giftName: "Linh Thạch Hạ Phẩm", count: 3 },
-      { giftId: "mock-tien-dan", giftName: "Cửu Chuyển Kim Đan", count: 2 },
+      { giftId: "mock-tien-dan", giftName: "Thái Cực Bát Quái Bàn", count: 2 },
       { giftId: "mock-phi-kiem", giftName: "Thái Ất Phi Kiếm", count: 1 },
     ];
     const chosen = gifts[i % gifts.length];

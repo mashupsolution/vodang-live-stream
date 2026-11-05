@@ -1,7 +1,7 @@
 import Phaser from "phaser";
 
 /**
- * Procedural texture generation for Tu Tiên Online LIVE flying sword array.
+ * Procedural texture generation for Võ Đang Phái LIVE flying sword array.
  * Generates high-fidelity procedural canvas textures matching the Celadon-Gold (Vân Ngọc & Kim Quang) theme.
  */
 export function generateSwordTextures(scene: Phaser.Scene): void {
@@ -357,7 +357,7 @@ export interface PooledTrail {
 
 /**
  * Orbiting Sword Array (Linh Kiếm Hộ Đỉnh) and Bagua Dais array.
- * Controls 2.5D orbital depth sorting around Tứ Linh Đỉnh bronze-jade cauldron,
+ * Controls 2.5D orbital depth sorting around the Thái Cực Song Long altar,
  * reactive Vạn Kiếm Quy Tông bursts, and protective celestial tribulation canopy.
  *
  * Strict performance rule: ZERO heap allocations in update() loop.

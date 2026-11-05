@@ -126,7 +126,7 @@ export function mountGame(parent: HTMLElement, client: TempleClient) {
     }
 
     preload() {
-      // Primary Tu Tiên Online assets
+      // Primary Võ Đang Phái assets
       this.load.image("hall", "/assets/linh-son-hall.webp");
       this.load.image("cauldron", "/assets/tu-linh-dinh.webp");
       this.load.spritesheet("cultivator", "/assets/cultivators.png", {
@@ -212,7 +212,7 @@ export function mountGame(parent: HTMLElement, client: TempleClient) {
       this.cauldron = this.add
         .image(540, 1065, this.activeCauldronKey)
         .setOrigin(0.5, 1)
-        .setDisplaySize(590, 585)
+        .setDisplaySize(590, 590)
         .setDepth(2);
 
       // Twin spirit-pillar lantern glows
