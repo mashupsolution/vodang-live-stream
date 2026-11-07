@@ -15,6 +15,7 @@
     "start": "tsx apps/server/src/index.ts --production",
     "test": "tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
+    "screenshots": "playwright test tests/e2e/generate-screenshots.spec.ts",
     "benchmark": "TEMPLE_BENCHMARK=1 playwright test tests/e2e/benchmark.spec.ts",
     "check": "tsc --noEmit",
     "format": "prettier --write 'apps/**/*.{ts,tsx,css,json,html}' 'packages/**/*.{ts,json}' 'tests/**/*.ts' 'scripts/*.mjs' playwright.config.ts",
