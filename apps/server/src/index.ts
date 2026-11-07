@@ -23,7 +23,7 @@ if (production) {
   });
   temple.app.use(vite.middlewares);
 }
-const port = Number(process.env.PORT ?? 3001);
+const port = Number(process.env.PORT ?? 3000);
 temple.server.listen(port, "127.0.0.1", () =>
   console.log(`Võ Đang Phái LIVE · http://127.0.0.1:${port}/admin`),
 );

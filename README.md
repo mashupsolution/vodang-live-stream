@@ -47,16 +47,16 @@ make setup
 make
 ```
 
-`make setup` cài phụ thuộc và tạo `.env` từ `.env.example` nếu chưa có; tệp `.env` hiện có được giữ nguyên. Dùng `make run` để khởi động lại máy chủ, Ctrl+C để dừng, `make help` để xem các lệnh, `make install` để chỉ cài phụ thuộc và `make test` để chạy unit/integration tests.
+`make setup` cài phụ thuộc và tạo `.env` từ `.env.example` nếu chưa có; tệp `.env` hiện có được giữ nguyên. `make run` (và `make setup`) tự chạy `make tts`: lần đầu tạo `.venv`, cài gói `zerotts` và tải model (~1 GB, cần Internet) vào `data/zerotts-model`; các lần sau bỏ qua. Cần `uv` hoặc `python3`. Lỗi cài/tải không chặn máy chủ, Tiên Âm tự dùng Linh (macOS) hoặc Edge (Windows). Đặt `ZEROTTS=0` để bỏ qua. Xem [Tiên Âm dẫn truyện](#tiên-âm-dẫn-truyện-tiếng-việt). Dùng `make run` để khởi động lại máy chủ, Ctrl+C để dừng, `make help` để xem các lệnh, `make install` để chỉ cài phụ thuộc và `make test` để chạy unit/integration tests.
 
-Mở [Phòng điều khiển](http://127.0.0.1:3001/admin) và bấm **Chạy mô phỏng** để thêm đệ tử mẫu và tự động tạo tương tác tu vi; bấm **Dừng mô phỏng** để dừng. Đệ tử rời cảnh sau hai phút không hoạt động, nhưng tu vi, cảnh giới và điểm cống hiến vẫn được bảo tồn.
+Mở [Phòng điều khiển](http://127.0.0.1:3000/admin) và bấm **Chạy mô phỏng** để thêm đệ tử mẫu và tự động tạo tương tác tu vi; bấm **Dừng mô phỏng** để dừng. Đệ tử rời cảnh sau hai phút không hoạt động, nhưng tu vi, cảnh giới và điểm cống hiến vẫn được bảo tồn.
 
 | Đường dẫn | Dùng để |
 | --- | --- |
-| [`/admin`](http://127.0.0.1:3001/admin) | Phòng điều khiển cho người vận hành (Chưởng môn) |
-| [`/game`](http://127.0.0.1:3001/game) | Võ Đang Kim Đỉnh: hướng dẫn câu lệnh/lễ vật TikTok, Võ Đang Bảng, nút bật/tắt tiếng. Tương tác thử nằm trong quản trị |
-| [`/overlay`](http://127.0.0.1:3001/overlay) | Nguồn OBS: chỉ cảnh Võ Đang Kim Đỉnh, không có thanh điều khiển |
-| [`/overlay?audio=1`](http://127.0.0.1:3001/overlay?audio=1) | Nguồn OBS có âm thanh sơn môn và Tiên Âm |
+| [`/admin`](http://127.0.0.1:3000/admin) | Phòng điều khiển cho người vận hành (Chưởng môn) |
+| [`/game`](http://127.0.0.1:3000/game) | Võ Đang Kim Đỉnh: hướng dẫn câu lệnh/lễ vật TikTok, Võ Đang Bảng, nút bật/tắt tiếng. Tương tác thử nằm trong quản trị |
+| [`/overlay`](http://127.0.0.1:3000/overlay) | Nguồn OBS: chỉ cảnh Võ Đang Kim Đỉnh, không có thanh điều khiển |
+| [`/overlay?audio=1`](http://127.0.0.1:3000/overlay?audio=1) | Nguồn OBS có âm thanh sơn môn và Tiên Âm |
 
 Chạy bản production:
 
@@ -65,7 +65,7 @@ npm run build
 npm start
 ```
 
-Dừng máy chủ phát triển trước khi chạy production trên cùng cổng. Có thể đổi `PORT` (mặc định `3001`) và `TEMPLE_DB` (mặc định `data/tutien.sqlite`) trong `.env` (sao chép từ `.env.example`). Ứng dụng chỉ lắng nghe `127.0.0.1`, không được triển khai công khai như một dịch vụ có xác thực.
+Dừng máy chủ phát triển trước khi chạy production trên cùng cổng. Có thể đổi `PORT` (mặc định `3000`) và `TEMPLE_DB` (mặc định `data/tutien.sqlite`) trong `.env` (sao chép từ `.env.example`). Ứng dụng chỉ lắng nghe `127.0.0.1`, không được triển khai công khai như một dịch vụ có xác thực.
 
 ## Ứng dụng máy tính (macOS, Windows)
 
@@ -80,7 +80,7 @@ Dừng máy chủ phát triển trước khi chạy production trên cùng cổn
 Giải nén rồi chạy tệp `TuTienOnline-…`. Một cửa sổ dòng lệnh mở ra, trình duyệt tự mở trang quản trị; đóng cửa sổ đó (hoặc Ctrl+C) để thoát. Không cần cài Node hay Bun.
 
 - Dữ liệu: macOS `~/Library/Application Support/TuTienOnline`, Windows `%APPDATA%\TuTienOnline` (đổi bằng biến môi trường `TEMPLE_HOME`; `TEMPLE_DB` và `PORT` vẫn dùng được). Sao lưu bằng cách sao chép thư mục này khi ứng dụng đã dừng.
-- Cổng mặc định 3001; nếu đã có bản đang chạy, ứng dụng chỉ mở lại trang quản trị. Tùy chọn: `--no-open`, `--port <số>`.
+- Cổng mặc định 3000; nếu đã có bản đang chạy, ứng dụng chỉ mở lại trang quản trị. Tùy chọn: `--no-open`, `--port <số>`.
 - Bản dựng **chưa ký số**: macOS có thể chặn lần đầu (`xattr -d com.apple.quarantine ./TuTienOnline-darwin-*`); Windows SmartScreen có thể cảnh báo.
 - Tiên Âm dẫn truyện chỉ có trên macOS (giọng Linh); Windows chạy không có giọng dẫn (lời tri ân vẫn hiện trên hình).
 
@@ -135,12 +135,14 @@ Tên đạo hữu luôn hiện dưới nhân vật, tự rút gọn theo khoản
 
 Trên **macOS**, Tiên Âm tiếp tục dùng giọng **Linh** cục bộ để tạo WAV. Trên **Windows**, máy chủ dùng `msedge-tts@2.1.1` để tạo MP3 qua dịch vụ Microsoft Edge Read Aloud, giống cách tiếp cận của `di-chua-online`; mặc định **Nam Minh**, có thể chọn **Hoài My** trong Cài đặt. Windows cần Internet và gửi nội dung lời tri ân tới dịch vụ giọng đọc; không cần cài giọng Windows hay nhập khóa TTS.
 
-**ZeroTTS (giọng Mai Chi, chạy cục bộ, không cần Internet).** Khi có model ZeroTTS, Tiên Âm ưu tiên dùng nó thay cho Linh/Edge, cùng giọng với app câu cá. Cài một lần:
+**ZeroTTS (giọng Mai Chi, chạy cục bộ, không cần Internet).** Khi có model ZeroTTS, Tiên Âm ưu tiên dùng nó thay cho Linh/Edge, cùng giọng với app câu cá. Tự cài khi `make run`; cài tay:
 
 ```bash
-uv venv .venv && uv pip install --python .venv/bin/python zerotts
-# đặt model tại data/zerotts-model (hoặc ZEROTTS_MODEL_PATH=/đường/dẫn/model)
+make tts   # tương đương: uv venv .venv && uv pip install --python .venv/bin/python zerotts huggingface_hub
+# model zeroweight-ai/ZeroTTS được tải vào data/zerotts-model (hoặc đặt ZEROTTS_MODEL_PATH=/đường/dẫn/model)
 ```
+
+**Tự động khi `make run`.** `make tts` (chạy trước `make run`/`make setup`) cài ZeroTTS nếu thiếu và bỏ qua nếu đã có. ZeroTTS được chọn khi thấy `data/zerotts-model/config.json` (hoặc `ZEROTTS_MODEL_PATH`/`ZEROTTS_PYTHON` hợp lệ); mục **Cài đặt** sẽ hiện provider `zerotts`. Chạy tay `npm run dev` hoặc `npm start` không cài gì, chỉ dùng ZeroTTS nếu đã cài.
 
 Biến môi trường: `ZEROTTS_MODEL_PATH`, `ZEROTTS_PYTHON` (mặc định `.venv/bin/python` rồi `python3`), `ZEROTTS_DATA_DIR`, `ZEROTTS=0` để tắt. Không có model/Python thì tự dùng Linh (macOS) hoặc Edge (Windows). Cài đặt hiện 8 giọng (Mai Chi mặc định, Bảo Trang, Hà My, Kim Oanh, Gia Huy, Hữu Đức, Quang Minh, Tiến Đạt); WAV được cache ở `data/tts-cache`. Lần đầu nạp model mất vài giây và khoảng 3 giây mỗi lời đọc; bản `.exe`/Bun đóng gói không kèm model nên ZeroTTS chỉ dùng khi bạn tự cài.
 
@@ -158,7 +160,7 @@ Lượt chia sẻ nhận lời cảm tạ truyền âm; cùng đạo hữu đư�
 
 ## Kết nối TikTok (tùy chọn)
 
-1. Mở [quản trị](http://127.0.0.1:3001/admin) → **Cài đặt → Kết nối TikTok**.
+1. Mở [quản trị](http://127.0.0.1:3000/admin) → **Cài đặt → Kết nối TikTok**.
 2. Nhập **tên tài khoản TikTok đang LIVE** và bấm **Lưu thông tin**. Nếu dịch vụ ký yêu cầu khóa, nhập **Khóa dịch vụ ký** (tùy chọn). Khóa chỉ ghi, không bao giờ hiển thị lại, không gửi vào trình duyệt hay nhật ký; dùng **Xóa khóa** để gỡ.
 3. Bấm **Kết nối TikTok**. Nếu đã kết nối, bấm lần nữa để áp dụng tài khoản mới.
 4. Kiểm tra trạng thái kết nối. Mã quà thật xuất hiện trong **Nhịp Võ Đang** sau sự kiện; dùng mã đó trong tab Lễ vật.
@@ -173,7 +175,7 @@ Adapter dùng thư viện bên thứ ba `tiktok-live-connector`, **không phải
 ## OBS Browser Source
 
 1. Mở ứng dụng và giữ máy chủ chạy.
-2. Trong OBS, tạo **Browser Source**, URL `http://127.0.0.1:3001/overlay`.
+2. Trong OBS, tạo **Browser Source**, URL `http://127.0.0.1:3000/overlay`.
 3. Đặt **Width 1080**, **Height 1920**, **FPS 30 hoặc 60**; canvas OBS cũng dùng tỉ lệ 9:16.
 4. Muốn có tiếng, dùng URL thêm `?audio=1` và bật **Control audio via OBS**. Chỉ lấy tiếng từ một nguồn để tránh lặp.
 5. Khi đổi góc nhìn/lễ vật/lời thề trong quản trị, nguồn phát tự cập nhật qua WebSocket. Tắt **Shutdown source when not visible** nếu muốn cảnh tiếp tục chạy khi đổi scene.

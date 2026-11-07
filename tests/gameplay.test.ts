@@ -508,6 +508,15 @@ test("simulator honors the requested disciple count and clamps it", async () => 
   sim.stop();
 });
 
+test("simulator audience equals the simulated disciple count", async () => {
+  const { Simulator } = await import("../apps/server/src/simulator.ts");
+  const { engine } = fixture();
+  const sim = new Simulator(engine, () => 100000);
+  sim.start(undefined, undefined, 25);
+  assert.equal(engine.snapshot().audience.current, 25);
+  sim.stop();
+});
+
 test("simulator stop clears demo disciples but keeps scores; reset clears both", async () => {
   const { Simulator } = await import("../apps/server/src/simulator.ts");
   const { engine } = fixture();

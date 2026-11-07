@@ -1,7 +1,7 @@
 import type { Announcement } from "../../../packages/shared/src/index.ts";
 
 const MAX_QUEUE = 12;
-const MAX_AGE_MS = 20_000;
+const MAX_AGE_MS = 28_000;
 const LOAD_TIMEOUT_MS = 15_000;
 const PLAYBACK_TIMEOUT_MS = 30_000;
 

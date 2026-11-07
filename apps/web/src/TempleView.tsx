@@ -197,7 +197,7 @@ export function TempleView({
     eventTitle = activeTribulation.name;
     eventText =
       activeTribulation.action === "tribulation-success"
-        ? `Đột phá ${activeTribulation.realmName ?? "cảnh giới mới"}!`
+        ? `Chúc mừng! Đột phá ${activeTribulation.realmName ?? "cảnh giới mới"}!`
         : "Hộ trận cản lôi · +20% cơ duyên";
   } else if (eventAnnouncement?.kind === "gift") {
     eventTitle = "Lễ vật dâng tặng";

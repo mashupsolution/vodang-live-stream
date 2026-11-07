@@ -122,9 +122,10 @@ export function Admin() {
   const [giftId, setGiftId] = useState("mock-linh-thach");
   const [count, setCount] = useState(1);
   const [audienceCount, setAudienceCount] = useState(1000);
-  const [simCount, setSimCount] = useState(1);
   const simCountValid =
-    Number.isInteger(simCount) && simCount >= 1 && simCount <= 500;
+    Number.isInteger(audienceCount) &&
+    audienceCount >= 1 &&
+    audienceCount <= 1000000;
 
   const [draft, setDraft] = useState<Settings>(defaultSettings);
   const [mappings, setMappings] = useState<GiftMapping[]>([]);
@@ -641,33 +642,11 @@ export function Admin() {
                       <small>
                         {state?.connector.mode === "tiktok"
                           ? "Chỉ là sự kiện mô phỏng; đã tắt khi TikTok LIVE đang kết nối."
-                          : "Số liệu và lượt triệu tập mẫu chỉ dùng để xem thử hiệu ứng."}
+                          : "Mỗi người xem là một đệ tử (sân hiện tối đa 40, phần dư được đếm thêm). Chạy mô phỏng dùng số này."}
                       </small>
                     </div>
                   </fieldset>
                   <div className="demo-control">
-                    <div className="audience-simulator">
-                      <label htmlFor="sim-disciples">
-                        Số đệ tử mô phỏng
-                      </label>
-                      <div>
-                        <input
-                          id="sim-disciples"
-                          aria-label="Số đệ tử mô phỏng"
-                          type="number"
-                          min="1"
-                          max="500"
-                          step="1"
-                          value={Number.isNaN(simCount) ? "" : simCount}
-                          disabled={running}
-                          onChange={(e) => setSimCount(e.target.valueAsNumber)}
-                        />
-                      </div>
-                      <small>
-                        Sân chỉ hiển thị tối đa 40 đệ tử, phần dư được đếm
-                        thêm.
-                      </small>
-                    </div>
                     <button
                       className="button primary"
                       disabled={
@@ -682,7 +661,7 @@ export function Admin() {
                             api("simulator", {
                               running: !running,
                               giftId,
-                              disciples: simCountValid ? simCount : undefined,
+                              viewers: simCountValid ? audienceCount : undefined,
                             }),
                           running
                             ? "Đã dừng mô phỏng."

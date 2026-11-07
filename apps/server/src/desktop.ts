@@ -104,7 +104,7 @@ const isSameApp = async (port: number) => {
 
 const portFlag = args.indexOf("--port");
 const first = Number(
-  (portFlag >= 0 ? args[portFlag + 1] : undefined) ?? process.env.PORT ?? 3001,
+  (portFlag >= 0 ? args[portFlag + 1] : undefined) ?? process.env.PORT ?? 3000,
 );
 let port = first;
 for (; port < first + 20; port++) {

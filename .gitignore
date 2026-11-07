@@ -11,3 +11,4 @@ playwright-report-benchmark/
 
 release/
 apps/server/src/embedded-assets.gen.ts
+.venv/

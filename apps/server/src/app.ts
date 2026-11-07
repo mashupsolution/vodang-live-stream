@@ -214,11 +214,11 @@ export function createTempleApp(
   app.post("/api/vows/:id", handleModeratePrayer);
 
   app.post("/api/simulator", (req, res) => {
-    const { running, giftId, disciples } = z
+    const { running, giftId, viewers } = z
       .object({
         running: z.boolean(),
         giftId: z.string().min(1).max(100).optional(),
-        disciples: z.number().int().min(1).max(500).optional(),
+        viewers: z.number().int().min(1).max(1000000).optional(),
       })
       .parse(req.body);
     if (running) {
@@ -231,7 +231,7 @@ export function createTempleApp(
       const gift = (engine.snapshot(true) as AdminSnapshot).mappings.find(
         (m) => m.giftId === giftId,
       );
-      simulator.start(gift?.giftId, gift?.name, disciples);
+      simulator.start(gift?.giftId, gift?.name, viewers);
     } else simulator.stop();
     res.json(engine.snapshot(true));
   });

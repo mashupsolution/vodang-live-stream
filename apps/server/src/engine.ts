@@ -879,7 +879,7 @@ export class Engine {
                   event.user.id,
                   next.name,
                 );
-                if (next.index >= 3 && event.source === s.session.source) {
+                if (event.source === s.session.source) {
                   this.announce(
                     "breakthrough",
                     "Chúc mừng đệ tử " +
@@ -967,6 +967,8 @@ export class Engine {
             s.session.recentDonors = s.session.recentDonors.slice(-20);
           }
           const tierBonus = 1 + DONOR_TIERS[c.donorTier]!.tuViBonus;
+          // Thanks are queued first so they are voiced before breakthrough/tier-up lines.
+          thank();
 
           c.tuVi += Math.round(points * 3 * count * tierBonus);
           c.hoPhapBonus = Math.min(
@@ -1001,7 +1003,7 @@ export class Engine {
               event.user.id,
               currentRealm.name,
             );
-            if (c.realmIndex >= 3 && event.source === s.session.source) {
+            if (event.source === s.session.source) {
               this.announce(
                 "breakthrough",
                 "Chúc mừng đệ tử " +
@@ -1046,7 +1048,6 @@ export class Engine {
                 { userName: this.safeName(event.user.name), tier: tier.index },
               );
           }
-          thank();
           result = action;
           this.checkMilestones(s.progress - points * count, s.progress);
           action = undefined;

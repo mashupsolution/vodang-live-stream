@@ -34,15 +34,26 @@ export class Simulator {
     return this.engine.simulating;
   }
 
-  start(giftId?: string, giftName?: string, disciples?: number) {
+  start(giftId?: string, giftName?: string, viewers?: number) {
     if (giftId) this.giftId = giftId;
     if (giftName) this.giftName = giftName;
     if (this.running) return;
-    this.disciples = Number.isFinite(disciples)
-      ? Math.min(MAX_DISCIPLES, Math.max(1, Math.floor(disciples!)))
+    // Each simulated viewer is one disciple (capped for the server).
+    const audience = Number.isFinite(viewers)
+      ? Math.min(1000000, Math.max(1, Math.floor(viewers!)))
       : DEFAULT_DISCIPLES;
+    this.disciples = Math.min(MAX_DISCIPLES, audience);
     this.engine.simulating = true;
     this.index = 0;
+    // Simulated audience is the viewer count the operator chose.
+    this.lastAudienceAt = this.now();
+    this.engine.ingest({
+      id: randomUUID(),
+      timestamp: this.lastAudienceAt,
+      source: "mock",
+      type: "audience",
+      count: audience,
+    } as LiveEvent);
     this.engine.onChange();
     this.schedule(0);
   }

@@ -178,3 +178,16 @@ test("welcome greets each new viewer once, throttled, and can be disabled", () =
     store.close();
   }
 });
+
+test("gift thanks are queued before breakthrough and tier-up lines", () => {
+  const store = new Store(":memory:");
+  try {
+    const engine = new Engine(store, () => 1000);
+    engine.ingest(gift("order1", 3, true));
+    const kinds = engine.snapshot().announcements.map((a) => a.kind);
+    assert.equal(kinds[0], "gift");
+    assert.ok(kinds.includes("tier-up"));
+  } finally {
+    store.close();
+  }
+});
