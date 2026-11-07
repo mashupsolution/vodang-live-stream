@@ -65,7 +65,7 @@ const nativeProvider: NarrationProvider = {
     }
   },
   async synthesize(text, _voice, signal) {
-    const dir = await mkdtemp(join(tmpdir(), "tutien-voice-"));
+    const dir = await mkdtemp(join(tmpdir(), "vodang-voice-"));
     try {
       const path = join(dir, "voice.wav");
       await execute(

@@ -107,13 +107,13 @@ async function withApp(
   }
 }
 
-test("/api/health returns ok: true, app: tu-tien-online", async () => {
+test("/api/health returns ok: true, app: vodang-online", async () => {
   await withApp(async (call) => {
     const res = await call("/api/health");
     assert.equal(res.status, 200);
     assert.deepEqual(res.json, {
       ok: true,
-      app: "tu-tien-online",
+      app: "vodang-online",
       version: 1,
     });
   });

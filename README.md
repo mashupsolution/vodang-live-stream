@@ -36,7 +36,7 @@ Trò chơi tương tác võ học Đạo gia Võ Đang thời gian thực chạy
 - **Võ Đang Bảng & Bảng Phong Thần Cảnh Giới theo từng phiên LIVE**: Công huân · lễ vật, Tinh tấn · quyền kiếm, và Bảng Phong Thần Cảnh Giới, mỗi bảng hiển thị năm đạo hữu dẫn đầu.
 - **Tiên Âm tiếng Việt** (giọng Linh trên macOS) đọc lời cảm ơn khi dâng lễ vật, nhạc nền tự nhỏ khi truyền âm.
 - Cột mốc sơn môn: Chân Vũ Trận (100, 250, 500, rồi mỗi 500 tiếp theo kích hoạt đại lễ) và số **người xem đồng thời** (100, 250, 500, 1.000, rồi mỗi 1.000 tiếp theo); lời mời truyền âm có giới hạn tần suất.
-- Dữ liệu lưu cục bộ bằng SQLite (`data/tutien.sqlite`); admin, game và nguồn OBS đồng bộ tức thì qua WebSocket.
+- Dữ liệu lưu cục bộ bằng SQLite (`data/vodang.sqlite`); admin, game và nguồn OBS đồng bộ tức thì qua WebSocket.
 
 ## Bắt đầu nhanh
 
@@ -65,7 +65,7 @@ npm run build
 npm start
 ```
 
-Dừng máy chủ phát triển trước khi chạy production trên cùng cổng. Có thể đổi `PORT` (mặc định `3000`) và `TEMPLE_DB` (mặc định `data/tutien.sqlite`) trong `.env` (sao chép từ `.env.example`). Ứng dụng chỉ lắng nghe `127.0.0.1`, không được triển khai công khai như một dịch vụ có xác thực.
+Dừng máy chủ phát triển trước khi chạy production trên cùng cổng. Có thể đổi `PORT` (mặc định `3000`) và `TEMPLE_DB` (mặc định `data/vodang.sqlite`) trong `.env` (sao chép từ `.env.example`). Ứng dụng chỉ lắng nghe `127.0.0.1`, không được triển khai công khai như một dịch vụ có xác thực.
 
 ## Ứng dụng máy tính (macOS, Windows)
 
@@ -77,11 +77,11 @@ Dừng máy chủ phát triển trước khi chạy production trên cùng cổn
 
 ### Cách chạy
 
-Giải nén rồi chạy tệp `TuTienOnline-…`. Một cửa sổ dòng lệnh mở ra, trình duyệt tự mở trang quản trị; đóng cửa sổ đó (hoặc Ctrl+C) để thoát. Không cần cài Node hay Bun.
+Giải nén rồi chạy tệp `VoDangOnline-…`. Một cửa sổ dòng lệnh mở ra, trình duyệt tự mở trang quản trị; đóng cửa sổ đó (hoặc Ctrl+C) để thoát. Không cần cài Node hay Bun.
 
-- Dữ liệu: macOS `~/Library/Application Support/TuTienOnline`, Windows `%APPDATA%\TuTienOnline` (đổi bằng biến môi trường `TEMPLE_HOME`; `TEMPLE_DB` và `PORT` vẫn dùng được). Sao lưu bằng cách sao chép thư mục này khi ứng dụng đã dừng.
+- Dữ liệu: macOS `~/Library/Application Support/VoDangOnline`, Windows `%APPDATA%\VoDangOnline` (đổi bằng biến môi trường `TEMPLE_HOME`; `TEMPLE_DB` và `PORT` vẫn dùng được). Sao lưu bằng cách sao chép thư mục này khi ứng dụng đã dừng.
 - Cổng mặc định 3000; nếu đã có bản đang chạy, ứng dụng chỉ mở lại trang quản trị. Tùy chọn: `--no-open`, `--port <số>`.
-- Bản dựng **chưa ký số**: macOS có thể chặn lần đầu (`xattr -d com.apple.quarantine ./TuTienOnline-darwin-*`); Windows SmartScreen có thể cảnh báo.
+- Bản dựng **chưa ký số**: macOS có thể chặn lần đầu (`xattr -d com.apple.quarantine ./VoDangOnline-darwin-*`); Windows SmartScreen có thể cảnh báo.
 - Tiên Âm dẫn truyện chỉ có trên macOS (giọng Linh); Windows chạy không có giọng dẫn (lời tri ân vẫn hiện trên hình).
 
 Tự dựng cục bộ cần [Bun](https://bun.sh) ≥ 1.4.4: `npm ci`, rồi `npm run package` (máy hiện tại) hoặc `npm run package -- --target bun-windows-x64` / `bun-darwin-arm64` / `bun-darwin-x64`. Kết quả ở `release/`; kiểm tra bằng `node scripts/smoke-desktop.mjs release/<tệp>`. Workflow `.github/workflows/build.yml` dựng và kiểm tra cả ba bản trên máy chủ GitHub, và tạo Release khi đẩy tag `v*`.
@@ -184,7 +184,7 @@ Adapter dùng thư viện bên thứ ba `tiktok-live-connector`, **không phải
 
 ## Dữ liệu và sao lưu
 
-Mặc định dữ liệu ở `data/tutien.sqlite`; các tệp WAL/SHM có thể tồn tại cạnh nó. Dữ liệu không nằm trong Git. SQLite lưu trạng thái, cài đặt, ánh xạ lễ vật, lời thề đạo tâm, cảnh giới và sự kiện chuẩn hóa. 40 dòng sự kiện gần nhất hiển thị trong quản trị; toàn bộ ID sự kiện được giữ trong SQLite để chống trùng khi khởi động lại. Bộ nhớ đệm cooldown/chuỗi quà được giới hạn 20.000 mục; lời thề chờ duyệt tối đa 200.
+Mặc định dữ liệu ở `data/vodang.sqlite`; các tệp WAL/SHM có thể tồn tại cạnh nó. Dữ liệu không nằm trong Git. SQLite lưu trạng thái, cài đặt, ánh xạ lễ vật, lời thề đạo tâm, cảnh giới và sự kiện chuẩn hóa. 40 dòng sự kiện gần nhất hiển thị trong quản trị; toàn bộ ID sự kiện được giữ trong SQLite để chống trùng khi khởi động lại. Bộ nhớ đệm cooldown/chuỗi quà được giới hạn 20.000 mục; lời thề chờ duyệt tối đa 200.
 
 - **Sao lưu:** dừng máy chủ bằng Ctrl+C, sao chép **toàn bộ thư mục `data/`**, rồi khởi động lại.
 - **Khôi phục:** dừng máy chủ, giữ bản sao thư mục hiện tại, đặt bản sao lưu về đúng vị trí và khởi động.

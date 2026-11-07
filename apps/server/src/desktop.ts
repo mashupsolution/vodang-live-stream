@@ -77,9 +77,13 @@ function serveEmbedded(): express.RequestHandler {
 }
 
 const temple = createTempleApp(
-  process.env.TUTIEN_DB ||
+  process.env.VODANG_DB ||
+    process.env.TUTIEN_DB ||
     process.env.TEMPLE_DB ||
-    join(dataDir, "tutien.sqlite"),
+    (existsSync(join(dataDir, "tutien.sqlite")) &&
+    !existsSync(join(dataDir, "vodang.sqlite"))
+      ? join(dataDir, "tutien.sqlite")
+      : join(dataDir, "vodang.sqlite")),
 );
 temple.app.use(serveEmbedded());
 
@@ -96,7 +100,7 @@ const isSameApp = async (port: number) => {
       signal: AbortSignal.timeout(1500),
     });
     const json = (await response.json()) as { ok?: boolean; app?: string };
-    return json.ok === true && json.app === "tu-tien-online";
+    return json.ok === true && json.app === "vodang-online";
   } catch {
     return false;
   }

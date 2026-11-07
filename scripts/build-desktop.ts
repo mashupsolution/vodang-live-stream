@@ -22,7 +22,7 @@ const windows = target.includes("windows");
 const outfile = resolve(
   root,
   option("--outfile") ??
-    `release/TuTienOnline-${target.replace(/^bun-/, "")}${windows ? ".exe" : ""}`,
+    `release/VoDangOnline-${target.replace(/^bun-/, "")}${windows ? ".exe" : ""}`,
 );
 const generated = join(root, "apps/server/src/embedded-assets.gen.ts");
 // Source art kept next to the optimised .webp/.png the game actually loads.

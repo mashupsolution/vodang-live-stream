@@ -17,7 +17,8 @@ const port = await new Promise((done) => {
 });
 const base = `http://127.0.0.1:${port}`;
 let output = "";
-const env = { ...process.env, TUTIEN_HOME: home, TEMPLE_HOME: home };
+const env = { ...process.env, VODANG_HOME: home, TEMPLE_HOME: home };
+delete env.VODANG_DB;
 delete env.TUTIEN_DB;
 delete env.TEMPLE_DB;
 delete env.PORT;
@@ -45,7 +46,7 @@ try {
       const res = await fetch(`${base}/api/health`);
       if (res.ok) {
         const json = await res.json();
-        ready = json.ok === true && json.app === "tu-tien-online";
+        ready = json.ok === true && json.app === "vodang-online";
       }
     } catch {
       await new Promise((r) => setTimeout(r, 500));
@@ -105,7 +106,7 @@ try {
   assert.equal(snapshot.type, "snapshot");
   assert.ok(!JSON.stringify(snapshot).includes("smoke-secret"));
   assert.ok(
-    readdirSync(home).includes("tutien.sqlite"),
+    readdirSync(home).includes("vodang.sqlite"),
     "database in data dir",
   );
   console.log(`smoke ok: ${binary}`);

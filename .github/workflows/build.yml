@@ -44,17 +44,17 @@ jobs:
           - name: macOS (Apple Silicon)
             runner: macos-latest
             target: bun-darwin-arm64
-            binary: TuTienOnline-darwin-arm64
+            binary: VoDangOnline-darwin-arm64
             archive: macos-arm64.tar.gz
           - name: macOS (Intel)
             runner: macos-15-intel
             target: bun-darwin-x64
-            binary: TuTienOnline-darwin-x64
+            binary: VoDangOnline-darwin-x64
             archive: macos-x64.tar.gz
           - name: Windows (x64)
             runner: windows-latest
             target: bun-windows-x64
-            binary: TuTienOnline-windows-x64.exe
+            binary: VoDangOnline-windows-x64.exe
             archive: windows-x64.zip
     defaults:
       run:
@@ -84,7 +84,7 @@ jobs:
         run: |
           version="${GITHUB_REF_NAME}"
           if [ "${GITHUB_REF_TYPE}" != "tag" ]; then version="dev-${GITHUB_SHA::7}"; fi
-          name="TuTienOnline-${version}-${ARCHIVE}"
+          name="VoDangOnline-${version}-${ARCHIVE}"
           cd release
           if [[ "${ARCHIVE}" == *.zip ]]; then
             powershell -NoProfile -Command "Compress-Archive -Path '${BINARY}' -DestinationPath '${name}'"
@@ -117,22 +117,22 @@ jobs:
           TAG: ${{ github.ref_name }}
         run: |
           cd dist-release
-          sha256sum ./TuTienOnline-* > SHA256SUMS
+          sha256sum ./VoDangOnline-* > SHA256SUMS
           cat > notes.md <<'NOTES'
-          Tu Tiên Online LIVE: ứng dụng máy tính (macOS và Windows).
+          Võ Đang Online LIVE: ứng dụng máy tính (macOS và Windows).
 
-          Giải nén rồi chạy tệp `TuTienOnline-…`; trình duyệt tự mở trang quản trị. Dữ liệu lưu trong thư mục người dùng (macOS: `~/Library/Application Support/TuTienOnline`, Windows: `%APPDATA%\TuTienOnline`). Nhập tài khoản TikTok trong **Cài đặt**.
+          Giải nén rồi chạy tệp `VoDangOnline-…`; trình duyệt tự mở trang quản trị. Dữ liệu lưu trong thư mục người dùng (macOS: `~/Library/Application Support/VoDangOnline`, Windows: `%APPDATA%\VoDangOnline`). Nhập tài khoản TikTok trong **Cài đặt**.
 
           Các bản dựng **chưa ký số / chưa notarize**:
-          - macOS: nếu bị chặn, chạy `xattr -d com.apple.quarantine ./TuTienOnline-darwin-*` hoặc chọn Mở trong Privacy & Security.
+          - macOS: nếu bị chặn, chạy `xattr -d com.apple.quarantine ./VoDangOnline-darwin-*` hoặc chọn Mở trong Privacy & Security.
           - Windows: SmartScreen có thể cảnh báo; chọn More info → Run anyway.
 
           Kiểm tra tệp tải về bằng `SHA256SUMS`. macOS dùng giọng Linh cục bộ; Windows dùng giọng Nam Minh hoặc Hoài My qua Edge TTS, cần Internet.
           NOTES
           # A release may already exist (e.g. created in the GitHub UI): attach to it instead of failing.
           if gh release view "$TAG" --repo "$GITHUB_REPOSITORY" >/dev/null 2>&1; then
-            gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber TuTienOnline-* SHA256SUMS
+            gh release upload "$TAG" --repo "$GITHUB_REPOSITORY" --clobber VoDangOnline-* SHA256SUMS
             gh release edit "$TAG" --repo "$GITHUB_REPOSITORY" --notes-file notes.md
           else
-            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes-file notes.md TuTienOnline-* SHA256SUMS
+            gh release create "$TAG" --repo "$GITHUB_REPOSITORY" --title "$TAG" --notes-file notes.md VoDangOnline-* SHA256SUMS
           fi

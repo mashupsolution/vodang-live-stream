@@ -2,7 +2,7 @@
 
 ## Đồng bộ cốt truyện Võ Đang (2026-11-05)
 - AGENTS.md, README.md, DESIGN.md, manifest (nhãn tier), comment code, test và ART_DIRECTION_WUDANG chuyển từ thuật ngữ Tu Tiên sang Võ Đang. Không đổi hành vi. Ngưỡng cảnh giới chuẩn là `packages/shared` (10/35/80/160/280/450/700/1050/1500); các con số 30…50.000 trong mục cũ của STATUS là lỗi thời. Lời dẫn nằm trong `engine.ts` (narrator.ts chỉ là TTS).
-- Còn nguyên có chủ đích: tên thư mục/tệp thực thi `TuTienOnline`, `data/tutien.sqlite`, tên gift id `mock-tien-dan`.
+- Còn nguyên có chủ đích: tên gift id `mock-tien-dan`. Đã đổi tên tutien → vodang (`VoDangOnline`, `data/vodang.sqlite`, `VODANG_DB`/`VODANG_HOME`); biến cũ `TUTIEN_*` và thư mục `TuTienOnline`/`tutien.sqlite` vẫn được nhận làm dự phòng.
 
 ## Thái Cực Âm Dương Song Long Altar Transformation — Complete (2026-11-05)
 - **Chuyển đổi Linh Đỉnh thành Thái Cực Âm Dương Song Long (`tu-linh-dinh.webp`):**
@@ -19,7 +19,7 @@
 - **Next Concrete Action:** Chưa xác minh LIVE thực tế (OBS đã gỡ, chưa xác nhận quyền stream-key TikTok). Chưa chạy lại test sau khi gộp vào bản có simulator.
 
 ## OBS setup — removed (2026-11-03)
-- OBS was installed and configured (profile/scene `TuTien`, Browser Source `http://127.0.0.1:3000/overlay?audio=1`) but the user decided to uninstall it; the config under `~/Library/Application Support/obs-studio` was deleted. TikTok stream-key access (PC LIVE) was never confirmed for the account; real LIVE remains unverified.
+- OBS was installed and configured (profile/scene `VoDang`, Browser Source `http://127.0.0.1:3000/overlay?audio=1`) but the user decided to uninstall it; the config under `~/Library/Application Support/obs-studio` was deleted. TikTok stream-key access (PC LIVE) was never confirmed for the account; real LIVE remains unverified.
 - Game server unchanged: dev server on `PORT=3000` from `.env` (README says 3001).
 
 ## Heart goals for watch-only viewers — implemented (2026-11-03)

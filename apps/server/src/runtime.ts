@@ -1,21 +1,28 @@
 import { spawn } from "node:child_process";
+import { existsSync } from "node:fs";
 import { homedir } from "node:os";
 import { join } from "node:path";
 
-const APP_DIR = "TuTienOnline";
+const APP_DIR = "VoDangOnline";
+const LEGACY_APP_DIR = "TuTienOnline";
 
 // Per-user data folder for the packaged app (database, optional .env).
 export function appDataDir(
   platform = process.platform,
   env: NodeJS.ProcessEnv = process.env,
 ): string {
-  const customHome = env.TUTIEN_HOME ?? env.TEMPLE_HOME;
+  const customHome = env.VODANG_HOME ?? env.TUTIEN_HOME ?? env.TEMPLE_HOME;
   if (customHome) return customHome;
-  if (platform === "darwin")
-    return join(homedir(), "Library", "Application Support", APP_DIR);
-  if (platform === "win32")
-    return join(env.APPDATA ?? join(homedir(), "AppData", "Roaming"), APP_DIR);
-  return join(env.XDG_DATA_HOME ?? join(homedir(), ".local", "share"), APP_DIR);
+  const base =
+    platform === "darwin"
+      ? join(homedir(), "Library", "Application Support")
+      : platform === "win32"
+        ? (env.APPDATA ?? join(homedir(), "AppData", "Roaming"))
+        : (env.XDG_DATA_HOME ?? join(homedir(), ".local", "share"));
+  const dir = join(base, APP_DIR);
+  const legacy = join(base, LEGACY_APP_DIR);
+  // Keep using an existing pre-rename data folder.
+  return !existsSync(dir) && existsSync(legacy) ? legacy : dir;
 }
 
 export function openBrowser(url: string) {

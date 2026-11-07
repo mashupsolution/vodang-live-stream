@@ -64,7 +64,7 @@ export const comment = (
 });
 
 test("progress, cultivators and duplicate IDs survive closing and reopening SQLite", () => {
-  const dir = mkdtempSync(join(tmpdir(), "tutien-test-")),
+  const dir = mkdtempSync(join(tmpdir(), "vodang-test-")),
     db = join(dir, "test.sqlite");
   try {
     let store = new Store(db),

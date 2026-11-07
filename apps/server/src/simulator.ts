@@ -134,7 +134,7 @@ export class Simulator {
       try {
         this.step();
       } catch (error) {
-        console.error("Tu Tien simulator stopped:", error);
+        console.error("Vo Dang simulator stopped:", error);
         this.stop();
         return;
       }

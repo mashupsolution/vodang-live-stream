@@ -21,9 +21,10 @@ import {
 } from "./connectors.ts";
 
 export function createTempleApp(
-  dbPath = process.env.TUTIEN_DB ??
+  dbPath = process.env.VODANG_DB ??
+    process.env.TUTIEN_DB ??
     process.env.TEMPLE_DB ??
-    "data/tutien.sqlite",
+    "data/vodang.sqlite",
   now: () => number = Date.now,
   rng: () => number = Math.random,
   narrator: Narrator = new Narrator(),
@@ -150,7 +151,7 @@ export function createTempleApp(
     },
   );
   app.get("/api/health", (_req, res) =>
-    res.json({ ok: true, app: "tu-tien-online", version: 1 }),
+    res.json({ ok: true, app: "vodang-online", version: 1 }),
   );
   app.get("/api/state", (_req, res) => res.json(engine.snapshot()));
   app.get("/api/admin", (_req, res) => res.json(engine.snapshot(true)));
@@ -327,7 +328,7 @@ export function createTempleApp(
       });
       if (!validation)
         console.error(
-          "Tu Tien request failed:",
+          "Vo Dang request failed:",
           error instanceof Error ? error.name : "UnknownError",
         );
     },

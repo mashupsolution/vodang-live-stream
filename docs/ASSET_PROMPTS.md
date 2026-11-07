@@ -1,6 +1,6 @@
 # Xianxia Asset Generation Prompts & Pipeline
 
-This document records the exact generative prompts, constraints, and normalization pipeline used to produce the **Tu Tiên Online LIVE** production assets on the `tu-tien-online` branch.
+This document records the exact generative prompts, constraints, and normalization pipeline used to produce the **Võ Đang Online LIVE** production assets on the `vodang-online` branch.
 
 All assets are generated using built-in image generation with strict color constraints and deterministic post-processing scripts:
 - Visual normalization: `scripts/normalize-assets.mjs`

@@ -337,7 +337,7 @@ console.log(
 // -------------------------------------------------------------
 // ENCODE TO 16-BIT PCM WAV & MP3 via FFMPEG
 // -------------------------------------------------------------
-console.log("- Writing 16-bit PCM WAV to /tmp/tu-tien-ambient.wav...");
+console.log("- Writing 16-bit PCM WAV to /tmp/vodang-ambient.wav...");
 
 const wavBuffer = Buffer.alloc(44 + loopSamples * 4); // 44-byte header + 4 bytes per stereo sample
 // Write RIFF header
@@ -371,7 +371,7 @@ for (let i = 0; i < loopSamples; i++) {
   offset += 4;
 }
 
-const tmpWavPath = "/tmp/tu-tien-ambient.wav";
+const tmpWavPath = "/tmp/vodang-ambient.wav";
 const outMp3Path = new URL(
   "../apps/web/public/assets/music-synth.mp3",
   import.meta.url,
